@@ -999,3 +999,167 @@ select.field-input {
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* ---------- Lead detail ---------- */
+
+.back-link-row {
+  margin: 0 0 var(--space-2);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.detail-header {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.detail-phone {
+  margin: 0;
+  color: var(--color-text-muted);
+  /*
+   * No direction override here. A phone number is digits, which the browser
+   * already lays out left to right inside a right-to-left line, while the
+   * line itself stays aligned to the start of the page like everything else.
+   */
+}
+
+.detail-banner {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.detail-banner-danger {
+  background: #fdecea;
+  border-color: #f4c7c3;
+  color: var(--color-danger);
+}
+
+.detail-banner-today {
+  background: var(--color-primary-soft);
+  border-color: #d5cffb;
+  color: var(--color-primary-hover);
+}
+
+.detail-banner-warning {
+  background: #fdf1dc;
+  border-color: #efd7a8;
+  color: var(--color-warning);
+}
+
+.detail-actions {
+  display: grid;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.detail-actions .btn {
+  width: 100%;
+}
+
+.detail-card {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.detail-list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: var(--space-3);
+  align-items: baseline;
+}
+
+.detail-label {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.detail-value {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Interaction timeline ---------- */
+
+.timeline {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline-item {
+  padding-inline-start: var(--space-3);
+  border-inline-start: 2px solid var(--color-border);
+}
+
+.timeline-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.timeline-date {
+  font-weight: 700;
+}
+
+.timeline-type {
+  color: var(--color-text-muted);
+}
+
+.timeline-note {
+  margin: var(--space-1) 0 0;
+  font-size: 0.9375rem;
+}
+
+.lead-name-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.lead-name-link:hover {
+  text-decoration: underline;
+}
+
+@media (min-width: 900px) {
+  .detail-actions {
+    grid-auto-flow: column;
+    justify-content: start;
+  }
+
+  .detail-actions .btn {
+    width: auto;
+    min-width: 180px;
+  }
+
+  .detail-card,
+  .detail-banner,
+  .detail-actions {
+    max-width: 720px;
+  }
+}

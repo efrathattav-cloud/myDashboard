@@ -95,7 +95,9 @@ export function renderLeadCard(lead, now) {
   return `
     <article class="card lead-card${flag ? ' lead-card-attention' : ''}">
       ${flag}
-      <h3 class="lead-name">${escapeHtml(lead.name)}</h3>
+      <h3 class="lead-name">
+        <a class="lead-name-link" href="#/leads/${encodeURIComponent(lead.id)}">${escapeHtml(lead.name)}</a>
+      </h3>
       <p class="lead-badges">
         ${badge(labelOf(STATUSES, lead.status), `badge-status-${lead.status}`)}
         ${badge(labelOf(TEMPERATURES, lead.temperature), `badge-${lead.temperature}`)}

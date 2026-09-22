@@ -17,6 +17,7 @@ Work in progress. Done so far:
 - [x] Main Dashboard (KPIs, revenue, follow-up alerts, recent leads)
 - [x] Leads screen with search and filters
 - [x] Add, edit and delete a lead, with validation
+- [x] Lead card with details and interaction history
 
 ## Technologies
 
