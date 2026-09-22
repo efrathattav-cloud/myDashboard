@@ -87,3 +87,37 @@ export function validateLead(lead) {
 export function isValid(errors) {
   return Object.keys(errors).length === 0;
 }
+
+/**
+ * Checks one interaction, and the next action recorded alongside it.
+ *
+ * @param {object} draft
+ * @param {string} draft.date
+ * @param {string} draft.type
+ * @param {string} [draft.nextAction]
+ * @param {string} [draft.nextActionDate]
+ * @param {string} [draft.customNextAction]
+ * @param {import('./model.js').Lead} [lead] Used to catch impossible dates.
+ * @returns {Record<string, string>}
+ */
+export function validateInteraction(draft, lead) {
+  /** @type {Record<string, string>} */
+  const errors = {};
+
+  if (!draft.date) errors.interactionDate = 'יש להזין תאריך.';
+  else if (lead?.createdAt && draft.date < lead.createdAt) {
+    errors.interactionDate = 'התאריך מוקדם מתאריך הפנייה הראשונה.';
+  }
+
+  if (!draft.type) errors.interactionType = 'יש לבחור סוג אינטראקציה.';
+
+  // Same rule as the lead form: an action needs a date to be findable.
+  if (draft.nextAction && !draft.nextActionDate) {
+    errors.newNextActionDate = 'יש להזין תאריך לפעולה הבאה.';
+  }
+  if (draft.nextAction === 'other' && !draft.customNextAction?.trim()) {
+    errors.newCustomNextAction = 'יש לפרט מהי הפעולה.';
+  }
+
+  return errors;
+}

@@ -75,3 +75,61 @@ export function deleteLead(id) {
   all.splice(index, 1);
   return true;
 }
+
+/**
+ * Records a conversation with a lead, and updates what comes next.
+ *
+ * Two things happen automatically, because forgetting either of them would
+ * leave the lead in the wrong list:
+ *   - "last conversation" becomes the most recent interaction date, so the
+ *     lead stops counting as one with no answer.
+ *   - the next action is replaced by whatever was chosen, which also means
+ *     that choosing nothing marks the old action as done.
+ *
+ * @param {string} leadId
+ * @param {object} entry
+ * @param {import('./model.js').Interaction} entry.interaction
+ * @param {string} [entry.nextAction]
+ * @param {string} [entry.customNextAction]
+ * @param {string} [entry.nextActionDate]
+ * @returns {import('./model.js').Lead | null} null when there is no such lead.
+ */
+export function addInteraction(leadId, { interaction, nextAction, customNextAction, nextActionDate }) {
+  const lead = getLead(leadId);
+  if (!lead) return null;
+
+  lead.interactions.push(interaction);
+  lead.lastInteractionAt = lead.interactions
+    .map((item) => item.date)
+    .sort()
+    .at(-1);
+
+  if (nextAction) {
+    lead.nextAction = nextAction;
+    lead.nextActionDate = nextActionDate;
+    if (nextAction === 'other' && customNextAction) lead.customNextAction = customNextAction;
+    else delete lead.customNextAction;
+  } else {
+    delete lead.nextAction;
+    delete lead.nextActionDate;
+    delete lead.customNextAction;
+  }
+
+  return lead;
+}
+
+/**
+ * Changes only the status of a lead.
+ * Won and lost are deliberately not allowed here: they need a sale or a
+ * reason, which only the full form collects.
+ *
+ * @param {string} leadId
+ * @param {string} status
+ * @returns {boolean} false when the lead or the status is not acceptable.
+ */
+export function changeStatus(leadId, status) {
+  const lead = getLead(leadId);
+  if (!lead || status === 'won' || status === 'lost') return false;
+  lead.status = status;
+  return true;
+}

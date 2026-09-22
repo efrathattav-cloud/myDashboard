@@ -11,11 +11,13 @@ import { formatFullDate, formatShortDate, today } from '../dates.js';
 import { escapeHtml } from '../html.js';
 import {
   daysSinceLastInteraction,
+  hasPendingAction,
   isDueToday,
   isOverdue,
   isStale,
 } from '../leads.js';
 import {
+  ACTIVE_STATUSES,
   INTERACTION_TYPES,
   LOST_REASONS,
   NEXT_ACTIONS,
@@ -27,7 +29,9 @@ import {
   formatCurrency,
   labelOf,
 } from '../model.js';
-import { getLead } from '../store.js';
+import { addInteraction, changeStatus, createId, getLead } from '../store.js';
+import { isValid, validateInteraction } from '../validation.js';
+import { selectField, textField, textareaField } from './fields.js';
 
 /**
  * One label-and-value row. Returns '' when there is nothing to show, which is
@@ -166,6 +170,97 @@ function interactionsSection(lead) {
 }
 
 /**
+ * Changing the status without opening the whole form (SPEC section 9.1).
+ *
+ * Only the statuses of a lead still in play are offered. Closing a lead as won
+ * or lost needs a sale or a reason, and those live in the form – so the panel
+ * says so rather than quietly saving a lead that is missing them.
+ *
+ * @param {import('../model.js').Lead} lead
+ */
+function quickStatus(lead) {
+  const choices = ACTIVE_STATUSES.map(
+    (status) =>
+      `<option value="${escapeHtml(status)}"${status === lead.status ? ' selected' : ''}>${escapeHtml(STATUSES[status])}</option>`
+  ).join('');
+
+  const finished = lead.status === 'won' || lead.status === 'lost';
+
+  return `
+    <section class="card quick-status" aria-labelledby="quick-status-heading">
+      <h2 class="section-title" id="quick-status-heading">שינוי סטטוס</h2>
+      ${
+        finished
+          ? `<p class="field-hint">
+               הליד סגור (${escapeHtml(labelOf(STATUSES, lead.status))}).
+               כדי לפתוח אותו מחדש יש לעבור לעריכה.
+             </p>`
+          : `<div class="quick-status-row">
+               <label class="visually-hidden" for="quick-status">סטטוס</label>
+               <select class="field-input" id="quick-status" data-role="quick-status">${choices}</select>
+               <button class="btn btn-secondary" type="button" data-action="save-status">שמירה</button>
+             </div>
+             <p class="field-hint">
+               לסגירת הליד כלקוחה או כלא־נסגרה יש לעבור לעריכה, שם נרשמים גם פרטי העסקה או הסיבה.
+             </p>`
+      }
+    </section>`;
+}
+
+/**
+ * The panel for recording a conversation (SPEC section 9.4) and deciding what
+ * comes next (SPEC section 12).
+ *
+ * One panel does both jobs, because in practice they are the same moment: you
+ * write down what was said, and then you decide what to do about it. Leaving
+ * the next action empty is what marks the previous one as done.
+ *
+ * @param {import('../model.js').Lead} lead
+ */
+function interactionPanel(lead) {
+  return `
+    <section class="card interaction-panel" data-role="interaction-panel" hidden
+             aria-labelledby="interaction-heading">
+      <h2 class="section-title" id="interaction-heading" tabindex="-1">הוספת אינטראקציה</h2>
+      <p class="form-summary" data-role="interaction-summary" role="alert" hidden></p>
+
+      <!--
+        novalidate turns off the browser's own checks, exactly as in the lead
+        form. Without it the browser blocks the submit with an English bubble
+        before validateInteraction ever runs, and the Hebrew messages below
+        never appear.
+      -->
+      <form id="interaction-form" novalidate>
+        ${textField({ name: 'interactionDate', label: 'תאריך', type: 'date', value: today(), required: true })}
+        ${selectField({ name: 'interactionType', label: 'סוג האינטראקציה', options: INTERACTION_TYPES, value: '', required: true, placeholder: 'בחרי סוג' })}
+        ${textareaField({ name: 'interactionNote', label: 'הערה', rows: 3, placeholder: 'מה נאמר בשיחה?' })}
+
+        <hr class="panel-divider">
+
+        ${selectField({
+          name: 'newNextAction',
+          label: 'הפעולה הבאה',
+          options: NEXT_ACTIONS,
+          value: lead.nextAction ?? '',
+          placeholder: 'אין פעולה ממתינה',
+          hint: 'השארה ריקה מסמנת שהפעולה הקודמת בוצעה ואין משימה פתוחה.',
+        })}
+        <div class="conditional" data-when="new-next-action-other" hidden>
+          ${textField({ name: 'newCustomNextAction', label: 'פירוט הפעולה', value: lead.customNextAction ?? '' })}
+        </div>
+        <div class="conditional" data-when="new-next-action-any" hidden>
+          ${textField({ name: 'newNextActionDate', label: 'תאריך הפעולה הבאה', type: 'date', value: lead.nextActionDate ?? '' })}
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">שמירה</button>
+          <button class="btn btn-secondary" type="button" data-action="close-interaction">ביטול</button>
+        </div>
+      </form>
+    </section>`;
+}
+
+/**
  * Status, temperature, source and phone are all in the header already, so the
  * details list below does not repeat them.
  *
@@ -211,8 +306,21 @@ export function renderLeadDetail(params) {
     ${attentionBanner(lead, now)}
 
     <div class="detail-actions">
-      <a class="btn btn-primary" href="${editHref}">עריכת הליד</a>
+      <button class="btn btn-primary" type="button" data-action="open-interaction">
+        + הוספת אינטראקציה
+      </button>
+      ${
+        hasPendingAction(lead)
+          ? `<button class="btn btn-secondary" type="button" data-action="mark-done">
+               סימון הפעולה כבוצעה
+             </button>`
+          : ''
+      }
+      <a class="btn btn-secondary" href="${editHref}">עריכת הליד</a>
     </div>
+
+    ${quickStatus(lead)}
+    ${interactionPanel(lead)}
 
     <section class="card detail-card" aria-labelledby="details-heading">
       <h2 class="section-title" id="details-heading">פרטי הליד</h2>
@@ -232,4 +340,132 @@ export function renderLeadDetail(params) {
     ${lostSection(lead)}
     ${interactionsSection(lead)}
   `;
+}
+
+/**
+ * @param {HTMLElement} screen The element holding this screen's HTML.
+ * @param {Record<string, string>} params
+ */
+export function mountLeadDetail(screen, params) {
+  const lead = getLead(params.id);
+  if (!lead) return; // the "lead not found" screen has nothing to attach to
+
+  const panel = screen.querySelector('[data-role="interaction-panel"]');
+  const form = screen.querySelector('#interaction-form');
+  const summary = screen.querySelector('[data-role="interaction-summary"]');
+
+  /** Shows or hides the parts of the panel that depend on the next action. */
+  function updateConditionals() {
+    const chosen = form.elements.newNextAction.value;
+    const shown = {
+      'new-next-action-any': Boolean(chosen),
+      'new-next-action-other': chosen === 'other',
+    };
+    for (const block of form.querySelectorAll('.conditional')) {
+      block.hidden = !shown[block.dataset.when];
+    }
+  }
+
+  /**
+   * Opens the panel.
+   * @param {boolean} clearNextAction true when the pending action is being
+   *   marked as done, so the field starts empty instead of repeating it.
+   */
+  function openPanel(clearNextAction) {
+    if (clearNextAction) form.elements.newNextAction.value = '';
+    updateConditionals();
+    panel.hidden = false;
+    panel.scrollIntoView({ block: 'nearest' });
+    screen.querySelector('#interaction-heading').focus();
+  }
+
+  function closePanel() {
+    panel.hidden = true;
+    summary.hidden = true;
+    form.reset();
+  }
+
+  /** Redraws the whole card, the way app.js does, so no listener is left behind. */
+  function redraw() {
+    const fresh = document.createElement('div');
+    fresh.innerHTML = renderLeadDetail(params);
+    screen.replaceWith(fresh);
+    mountLeadDetail(fresh, params);
+  }
+
+  /**
+   * Marks the fields an error belongs to. The keys returned by
+   * validateInteraction are the field names, so they line up directly.
+   *
+   * @param {Record<string, string>} errors
+   */
+  function markInvalidFields(errors) {
+    for (const field of form.querySelectorAll('.field')) {
+      field.classList.remove('field-invalid');
+    }
+    for (const input of form.querySelectorAll('[aria-invalid]')) {
+      input.removeAttribute('aria-invalid');
+    }
+    for (const name of Object.keys(errors)) {
+      const input = form.elements[name];
+      if (!input) continue;
+      input.setAttribute('aria-invalid', 'true');
+      input.closest('.field')?.classList.add('field-invalid');
+    }
+  }
+
+  form.addEventListener('change', updateConditionals);
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const value = (name) => form.elements[name].value.trim();
+    const draft = {
+      date: value('interactionDate'),
+      type: value('interactionType'),
+      note: value('interactionNote'),
+      nextAction: value('newNextAction'),
+      customNextAction: value('newCustomNextAction'),
+      nextActionDate: value('newNextActionDate'),
+    };
+
+    const errors = validateInteraction(draft, lead);
+    markInvalidFields(errors);
+
+    if (!isValid(errors)) {
+      // The panel is short, so one message at the top reads better than
+      // scattering them, and it is what a screen reader announces first. The
+      // fields themselves are still marked, so it is clear which ones they are.
+      summary.textContent = Object.values(errors).join(' ');
+      summary.hidden = false;
+      return;
+    }
+
+    summary.hidden = true;
+
+    addInteraction(params.id, {
+      interaction: {
+        id: createId('interaction'),
+        date: draft.date,
+        type: draft.type,
+        ...(draft.note ? { note: draft.note } : {}),
+      },
+      nextAction: draft.nextAction,
+      customNextAction: draft.customNextAction,
+      nextActionDate: draft.nextActionDate,
+    });
+
+    redraw();
+  });
+
+  screen.addEventListener('click', (event) => {
+    const action = event.target.closest('[data-action]')?.dataset.action;
+    if (action === 'open-interaction') openPanel(false);
+    else if (action === 'mark-done') openPanel(true);
+    else if (action === 'close-interaction') closePanel();
+    else if (action === 'save-status') {
+      const chosen = screen.querySelector('[data-role="quick-status"]').value;
+      if (changeStatus(params.id, chosen)) redraw();
+    }
+  });
 }

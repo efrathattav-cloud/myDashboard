@@ -1,7 +1,7 @@
 import { icons } from './icons.js';
 import { getCurrentPath, matchRoute, startRouter } from './router.js';
 import { renderDashboard } from './views/dashboard.js';
-import { renderLeadDetail } from './views/lead-detail.js';
+import { mountLeadDetail, renderLeadDetail } from './views/lead-detail.js';
 import { mountLeadForm, renderLeadForm } from './views/lead-form.js';
 import { mountLeads, renderLeads } from './views/leads.js';
 import { renderAnalytics, renderNotFound, renderTasks } from './views/placeholders.js';
@@ -34,7 +34,7 @@ const ROUTES = [
   // A fixed path must come before a pattern with the same number of segments.
   { path: '/leads/new', title: 'ליד חדש', render: renderLeadForm, mount: mountLeadForm, navSection: '/leads', hideFab: true },
   { path: '/leads/:id/edit', title: 'עריכת ליד', render: renderLeadForm, mount: mountLeadForm, navSection: '/leads', hideFab: true },
-  { path: '/leads/:id', title: 'כרטיס ליד', render: renderLeadDetail, navSection: '/leads', hideFab: true },
+  { path: '/leads/:id', title: 'כרטיס ליד', render: renderLeadDetail, mount: mountLeadDetail, navSection: '/leads', hideFab: true },
   { path: '/tasks', title: 'משימות', render: renderTasks, navSection: '/tasks' },
   { path: '/analytics', title: 'אנליטיקס', render: renderAnalytics, navSection: '/analytics' },
 ];

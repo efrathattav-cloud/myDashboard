@@ -18,6 +18,7 @@ Work in progress. Done so far:
 - [x] Leads screen with search and filters
 - [x] Add, edit and delete a lead, with validation
 - [x] Lead card with details and interaction history
+- [x] Recording interactions, marking actions done, quick status change
 
 ## Technologies
 

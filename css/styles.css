@@ -1163,3 +1163,62 @@ select.field-input {
     max-width: 720px;
   }
 }
+
+/* ---------- Interaction panel and quick status ---------- */
+
+.interaction-panel {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.interaction-panel[hidden] {
+  display: none;
+}
+
+.interaction-panel #interaction-form {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.interaction-panel #interaction-heading:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+.form-summary[hidden] {
+  display: none;
+}
+
+.panel-divider {
+  width: 100%;
+  margin: var(--space-1) 0;
+  border: 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.quick-status {
+  display: grid;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.quick-status-row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.quick-status-row .field-input {
+  flex: 1;
+}
+
+.quick-status-row .btn {
+  flex: none;
+}
+
+@media (min-width: 900px) {
+  .interaction-panel,
+  .quick-status {
+    max-width: 720px;
+  }
+}
