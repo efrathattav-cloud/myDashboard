@@ -1,13 +1,13 @@
 import { icons } from './icons.js';
 import { getCurrentPath, matchRoute, startRouter } from './router.js';
+import { renderDashboard } from './views/dashboard.js';
 import {
   renderAnalytics,
-  renderDashboard,
   renderLeads,
   renderNewLead,
   renderNotFound,
   renderTasks,
-} from './views.js';
+} from './views/placeholders.js';
 
 /**
  * @typedef {Object} Route

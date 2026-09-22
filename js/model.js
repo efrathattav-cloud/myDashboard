@@ -113,6 +113,17 @@ export function labelOf(map, key, customText) {
   return map[key] ?? key;
 }
 
+/**
+ * Money, the way it is written in the app: ₪8,680.
+ * Whole shekels only – the business does not quote agorot.
+ *
+ * @param {number} [amount]
+ * @returns {string} '₪0' when there is no amount.
+ */
+export function formatCurrency(amount) {
+  return `₪${Math.round(amount ?? 0).toLocaleString('he-IL')}`;
+}
+
 // ---------- Data shapes ----------
 // These @typedef comments give editors autocomplete and catch typos.
 // They describe the data; they do not run.

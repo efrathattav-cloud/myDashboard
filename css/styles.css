@@ -327,3 +327,326 @@ a {
     font-size: 1.75rem;
   }
 }
+
+/* ---------- Dashboard ---------- */
+
+.section-title {
+  font-size: 1.0625rem;
+  margin: 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.section-link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.section-link:hover {
+  text-decoration: underline;
+}
+
+.dashboard-section {
+  margin-top: var(--space-5);
+}
+
+.dashboard-section > .section-title {
+  margin-bottom: var(--space-3);
+}
+
+/* KPI cards: two per row on a narrow screen, four in a row on desktop. */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.kpi {
+  display: grid;
+  gap: var(--space-1);
+  align-content: start;
+  padding: var(--space-4) var(--space-3);
+}
+
+.kpi-label {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.kpi-value {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.kpi-comparison {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* Revenue gets its own highlighted card. */
+.revenue-card {
+  margin-top: var(--space-3);
+  display: grid;
+  gap: var(--space-1);
+  background: var(--color-primary-soft);
+  border-color: transparent;
+}
+
+.revenue-label {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.revenue-value {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-primary-hover);
+}
+
+.revenue-comparison {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Needs attention ---------- */
+
+.alert-list {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.alert-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 56px;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-inline-start: 4px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.alert-row:hover {
+  background: var(--color-bg);
+}
+
+.alert-count {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+}
+
+.alert-text {
+  flex: 1;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.alert-chevron {
+  display: inline-flex;
+  flex: none;
+  color: var(--color-text-muted);
+}
+
+.alert-chevron svg {
+  width: 20px;
+  height: 20px;
+}
+
+.alert-danger {
+  border-inline-start-color: var(--color-danger);
+}
+
+.alert-danger .alert-count {
+  background: #fdecea;
+  color: var(--color-danger);
+}
+
+.alert-today {
+  border-inline-start-color: var(--color-primary);
+}
+
+.alert-today .alert-count {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-hover);
+}
+
+.alert-warning {
+  border-inline-start-color: var(--color-warning);
+}
+
+.alert-warning .alert-count {
+  background: #fdf1dc;
+  color: var(--color-warning);
+}
+
+/* ---------- Lead cards ---------- */
+
+.lead-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.lead-card {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.lead-card-attention {
+  border-inline-start: 4px solid var(--color-warning);
+}
+
+.lead-flag {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.lead-flag-danger {
+  color: var(--color-danger);
+}
+
+.lead-flag-today {
+  color: var(--color-primary-hover);
+}
+
+.lead-flag-warning {
+  color: var(--color-warning);
+}
+
+.lead-name {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.lead-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.badge-hot {
+  background: #fdecea;
+  border-color: #f4c7c3;
+  color: var(--color-danger);
+}
+
+.badge-medium {
+  background: #fdf1dc;
+  border-color: #efd7a8;
+  color: var(--color-warning);
+}
+
+.badge-cold {
+  background: #e8f0fb;
+  border-color: #c4d8f2;
+  color: #2c5d99;
+}
+
+.badge-status-won {
+  background: #e6f4ec;
+  border-color: #b8dfc8;
+  color: var(--color-success);
+}
+
+.badge-status-lost {
+  background: var(--color-bg);
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.lead-rows {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.lead-row {
+  display: flex;
+  gap: var(--space-2);
+  font-size: 0.875rem;
+}
+
+.lead-row-label {
+  flex: none;
+  min-width: 88px;
+  color: var(--color-text-muted);
+}
+
+.lead-row-value {
+  font-weight: 600;
+}
+
+.lead-row-muted {
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Empty states ---------- */
+
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-5) var(--space-4);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.empty-state p {
+  margin: 0;
+}
+
+/* ---------- Dashboard: desktop ---------- */
+
+@media (min-width: 900px) {
+  .kpi-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .kpi-value {
+    font-size: 2rem;
+  }
+
+  .lead-list {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+}

@@ -90,3 +90,44 @@ export function formatFullDate(iso) {
   const [year, month, day] = iso.split('-');
   return `${day}/${month}/${year}`;
 }
+
+/**
+ * The month a date belongs to, as 'YYYY-MM'.
+ * Comparing months is then just a string comparison.
+ *
+ * @param {string} iso
+ * @returns {string}
+ */
+export function monthOf(iso) {
+  return iso.slice(0, 7);
+}
+
+/** @returns {string} The current month as 'YYYY-MM'. */
+export function currentMonth() {
+  return monthOf(today());
+}
+
+/**
+ * The month before a given one, as 'YYYY-MM'. Handles the year boundary.
+ *
+ * @param {string} [month] Defaults to the current month.
+ * @returns {string}
+ */
+export function previousMonth(month = currentMonth()) {
+  const [year, monthNumber] = month.split('-').map(Number);
+  const date = new Date(year, monthNumber - 2, 1); // -1 for zero-based, -1 to step back
+  return monthOf(toISO(date));
+}
+
+/**
+ * A month written out for the user: 'ספטמבר 2026'.
+ *
+ * @param {string} month 'YYYY-MM'.
+ * @returns {string}
+ */
+export function formatMonth(month) {
+  const [year, monthNumber] = month.split('-').map(Number);
+  const name = new Date(year, monthNumber - 1, 1)
+    .toLocaleDateString('he-IL', { month: 'long' });
+  return `${name} ${year}`;
+}

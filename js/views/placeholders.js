@@ -1,5 +1,5 @@
-// Screen views. For now each screen is a placeholder; real content is added
-// step by step, following the development order in PRACTICE.md.
+// Screens that have no real content yet. Each one moves into its own file
+// under js/views/ as it gets built, following the order in PRACTICE.md.
 
 /**
  * @param {string} title
@@ -18,13 +18,6 @@ function placeholderPage(title, subtitle, comingNext) {
     </section>
   `;
 }
-
-export const renderDashboard = () =>
-  placeholderPage(
-    'דשבורד',
-    'תמונת המצב של העסק במבט אחד.',
-    'כאן יוצגו כרטיסי KPI, הכנסות והתראות מעקב.'
-  );
 
 export const renderLeads = () =>
   placeholderPage(
