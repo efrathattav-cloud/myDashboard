@@ -177,8 +177,16 @@ export function renderLeads() {
       </details>
     </section>
 
-    <p class="result-count" id="result-count" aria-live="polite">${escapeHtml(count)}</p>
-    <div class="lead-list" id="lead-list">${list}</div>
+    <section aria-labelledby="results-heading">
+      <!--
+        Every lead card carries an h3. Without an h2 between them and the page
+        title, the outline jumps from h1 straight to h3. The heading is only
+        for that structure, so it is hidden from sight but read out.
+      -->
+      <h2 class="visually-hidden" id="results-heading">רשימת הלידים</h2>
+      <p class="result-count" id="result-count" aria-live="polite">${escapeHtml(count)}</p>
+      <div class="lead-list" id="lead-list">${list}</div>
+    </section>
   `;
 }
 

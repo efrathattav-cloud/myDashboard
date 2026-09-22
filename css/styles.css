@@ -3,16 +3,22 @@
 :root {
   --color-bg: #f7f6fb;
   --color-surface: #ffffff;
-  --color-border: #e6e3f0;
+  --color-border: #d5d2df;
   --color-text: #1f1d2b;
   --color-text-muted: #5f5b70;
   --color-primary: #6b5ce7;
   --color-primary-hover: #5a4bd4;
   --color-primary-soft: #efedfd;
   --color-on-primary: #ffffff;
-  --color-danger: #c2413b;
-  --color-warning: #b86e00;
-  --color-success: #2f8a5b;
+  /*
+   * These three were measured against both white and their own soft
+   * backgrounds, and darkened until every pairing clears 4.5:1 – the level at
+   * which normal-size text stays readable (SPEC section 21). The soft
+   * background is the harder test of the two, so it set the value.
+   */
+  --color-danger: #ba3e39;
+  --color-warning: #9c5d00;
+  --color-success: #2a7a51;
 
   --radius-sm: 8px;
   --radius-md: 14px;
@@ -1462,4 +1468,25 @@ select.field-input {
 .demo-zone .delete-confirm {
   width: 100%;
   max-width: 480px;
+}
+
+/* ---------- Touch targets ---------- */
+
+/*
+ * A link that is only as tall as its text is a ~22px target, which is hard to
+ * hit with a thumb. Padding grows the target to 44px; the matching negative
+ * margin cancels the space it would otherwise add, so nothing moves.
+ */
+.lead-name-link,
+.task-lead a,
+.section-link,
+.back-link {
+  display: inline-block;
+  padding-block: 11px;
+  margin-block: -11px;
+}
+
+.back-link,
+.section-link {
+  min-height: 0;
 }

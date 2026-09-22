@@ -22,6 +22,7 @@ Work in progress. Done so far:
 - [x] Tasks screen (overdue, today, upcoming)
 - [x] Analytics (conversion rate, funnel, by source, by product)
 - [x] Changes saved in the browser, with a Reset Demo Data option
+- [x] Accessibility, mobile and RTL review
 
 ## Technologies
 
