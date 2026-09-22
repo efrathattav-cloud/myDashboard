@@ -13,6 +13,7 @@ Work in progress. Done so far:
 
 - [x] Project foundation and layout (mobile bottom navigation, desktop sidebar, "New Lead" button, screen routing)
 - [x] Hebrew interface with RTL layout
+- [x] Data model and fictional demo data (16 leads)
 
 ## Technologies
 
@@ -58,6 +59,9 @@ css/styles.css    All styles (mobile first, desktop from 900px, RTL-safe)
 js/app.js         Routes and navigation rendering
 js/router.js      Hash router
 js/views.js       Screen views
+js/model.js       Business vocabulary (valid values + Hebrew labels) and data shapes
+js/dates.js       Date helpers ('YYYY-MM-DD' strings)
+js/demo-data.js   16 fictional demo leads
 js/icons.js       Inline SVG icons
 dev-server.py     Local no-cache dev server (not deployed)
 ```
