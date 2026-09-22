@@ -185,12 +185,12 @@ export function renderLeads() {
 /**
  * Attaches the screen's behaviour after its HTML is on the page.
  *
- * @param {HTMLElement} main
+ * @param {HTMLElement} screen The element holding this screen's HTML.
  */
-export function mountLeads(main) {
-  const search = main.querySelector('#lead-search');
-  const listElement = main.querySelector('#lead-list');
-  const countElement = main.querySelector('#result-count');
+export function mountLeads(screen) {
+  const search = screen.querySelector('#lead-search');
+  const listElement = screen.querySelector('#lead-list');
+  const countElement = screen.querySelector('#result-count');
 
   /** Redraws only the results, and keeps the address bar in step. */
   function refresh() {
@@ -205,23 +205,23 @@ export function mountLeads(main) {
   function readFiltersFromControls() {
     const filters = { query: search.value };
     for (const name of Object.keys(FILTER_PARAMS)) {
-      filters[name] = main.querySelector(`[data-filter="${name}"]`)?.value ?? '';
+      filters[name] = screen.querySelector(`[data-filter="${name}"]`)?.value ?? '';
     }
     return filters;
   }
 
   search.addEventListener('input', refresh);
-  for (const select of main.querySelectorAll('[data-filter]')) {
+  for (const select of screen.querySelectorAll('[data-filter]')) {
     select.addEventListener('change', refresh);
   }
 
   // The clear button also appears inside the "no results" card, which is
-  // redrawn on every keystroke. Listening on `main` keeps working after the
-  // button has been replaced.
-  main.addEventListener('click', (event) => {
+  // redrawn on every keystroke. Listening on the whole screen keeps working
+  // after the button has been replaced.
+  screen.addEventListener('click', (event) => {
     if (!event.target.closest('[data-action="clear-filters"]')) return;
     search.value = '';
-    for (const select of main.querySelectorAll('[data-filter]')) select.value = '';
+    for (const select of screen.querySelectorAll('[data-filter]')) select.value = '';
     refresh();
     search.focus();
   });

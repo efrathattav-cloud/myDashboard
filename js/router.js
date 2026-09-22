@@ -48,12 +48,39 @@ export function replaceQuery(path, query) {
 }
 
 /**
- * Finds the route that matches a path.
+ * Finds the route that matches a path, and pulls out its parameters.
+ *
+ * A segment starting with ':' matches anything and is captured by name, so
+ * the pattern "/leads/:id/edit" matches "/leads/lead-03/edit" and yields
+ * { id: 'lead-03' }.
+ *
+ * Routes are tried in order, so a fixed path such as "/leads/new" must be
+ * listed before a pattern of the same length such as "/leads/:id".
+ *
  * @param {Array<{path: string}>} routes
  * @param {string} path
+ * @returns {{route: object, params: Record<string, string>} | null}
  */
 export function matchRoute(routes, path) {
-  return routes.find((route) => route.path === path) ?? null;
+  const segments = path.split('/').filter(Boolean);
+
+  for (const route of routes) {
+    const pattern = route.path.split('/').filter(Boolean);
+    if (pattern.length !== segments.length) continue;
+
+    const params = {};
+    const matches = pattern.every((part, index) => {
+      if (part.startsWith(':')) {
+        params[part.slice(1)] = decodeURIComponent(segments[index]);
+        return true;
+      }
+      return part === segments[index];
+    });
+
+    if (matches) return { route, params };
+  }
+
+  return null;
 }
 
 /** @param {() => void} onChange */

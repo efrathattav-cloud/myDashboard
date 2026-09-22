@@ -197,6 +197,11 @@ a {
   color: var(--color-primary);
 }
 
+/* On a screen that is itself about adding or editing, the button is noise. */
+.app-shell.no-fab .fab {
+  display: none;
+}
+
 .fab {
   position: fixed;
   inset-inline-end: var(--space-4);
@@ -771,4 +776,226 @@ select.field-input {
   .filter-clear {
     width: auto;
   }
+}
+
+/* ---------- Forms ---------- */
+
+/* Mobile first: one field per row (SPEC section 17). */
+.lead-form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.form-section {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-section-title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.field-required {
+  color: var(--color-danger);
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.field-error {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-danger);
+}
+
+.field-invalid .field-input {
+  border-color: var(--color-danger);
+  border-width: 2px;
+}
+
+.field-textarea {
+  min-height: 88px;
+  padding: var(--space-2) var(--space-3);
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.conditional {
+  display: grid;
+  gap: var(--space-3);
+}
+
+/*
+ * The browser hides [hidden] elements with display:none, but that rule lives
+ * in its own stylesheet and any rule written here beats it. Without this line
+ * the display:grid above would keep every conditional block visible.
+ */
+.conditional[hidden] {
+  display: none;
+}
+
+/* Checkbox and radio groups */
+
+.choice-group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choice-group .field-label {
+  padding: 0;
+}
+
+.choices {
+  display: grid;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.choice input {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  accent-color: var(--color-primary);
+}
+
+.computed-value {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+}
+
+/* Summary shown above the form when a save was refused */
+.form-summary {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3);
+  background: #fdecea;
+  border: 1px solid #f4c7c3;
+  border-radius: var(--radius-md);
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.form-actions {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.form-actions .btn {
+  width: 100%;
+}
+
+/* Delete */
+
+.danger-zone {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  display: grid;
+  gap: var(--space-3);
+}
+
+.btn-danger {
+  background: var(--color-surface);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.btn-danger:hover {
+  background: #fdecea;
+}
+
+.delete-confirm {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: #fdecea;
+  border: 1px solid #f4c7c3;
+  border-radius: var(--radius-md);
+}
+
+.delete-question {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-danger);
+}
+
+@media (min-width: 900px) {
+  .lead-form {
+    max-width: 720px;
+  }
+
+  .form-actions {
+    grid-auto-flow: column;
+    justify-content: start;
+  }
+
+  .form-actions .btn {
+    width: auto;
+    min-width: 160px;
+  }
+
+  .choices {
+    grid-auto-flow: column;
+    justify-content: start;
+    gap: var(--space-4);
+  }
+}
+
+/* ---------- Lead card actions ---------- */
+
+.lead-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin: 0;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+
+.lead-action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 var(--space-2);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.lead-action:hover {
+  text-decoration: underline;
+}
+
+/*
+ * Text for screen readers only. Sighted users see "עריכה"; a screen reader
+ * reads "עריכה של דנה לוי", so the link makes sense out of context.
+ */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

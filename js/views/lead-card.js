@@ -114,5 +114,10 @@ export function renderLeadCard(lead, now) {
         </div>
         ${nextStepRow(lead)}
       </div>
+      <p class="lead-actions">
+        <a class="lead-action" href="#/leads/${encodeURIComponent(lead.id)}/edit">
+          עריכה<span class="visually-hidden"> של ${escapeHtml(lead.name)}</span>
+        </a>
+      </p>
     </article>`;
 }

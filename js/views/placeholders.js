@@ -33,13 +33,6 @@ export const renderAnalytics = () =>
     'כאן יוצגו גרפים לפי מקור, אחוז המרה ומשפך המכירה.'
   );
 
-export const renderNewLead = () =>
-  placeholderPage(
-    'ליד חדש',
-    'הוספת ליד בכמה שניות.',
-    'כאן יוצג טופס הוספת הליד.'
-  );
-
 export const renderNotFound = () => `
   <header class="page-header">
     <h1 class="page-title">הדף לא נמצא</h1>

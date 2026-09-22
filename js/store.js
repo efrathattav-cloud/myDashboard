@@ -33,3 +33,45 @@ export function getLead(id) {
 export function resetDemoData() {
   leads = createDemoLeads();
 }
+
+/**
+ * A new unique id.
+ * Combines the current time with a few random characters, which is plenty for
+ * a single-user demo and needs no server.
+ *
+ * @param {string} [prefix]
+ * @returns {string}
+ */
+export function createId(prefix = 'lead') {
+  const time = Date.now().toString(36);
+  const random = Math.random().toString(36).slice(2, 7);
+  return `${prefix}-${time}-${random}`;
+}
+
+/**
+ * Adds a new lead, or replaces an existing one with the same id.
+ *
+ * @param {import('./model.js').Lead} lead
+ * @returns {import('./model.js').Lead} The saved lead.
+ */
+export function saveLead(lead) {
+  const all = getLeads();
+  const index = all.findIndex((existing) => existing.id === lead.id);
+  if (index === -1) all.push(lead);
+  else all[index] = lead;
+  return lead;
+}
+
+/**
+ * Removes a lead.
+ *
+ * @param {string} id
+ * @returns {boolean} false when there was no such lead.
+ */
+export function deleteLead(id) {
+  const all = getLeads();
+  const index = all.findIndex((lead) => lead.id === id);
+  if (index === -1) return false;
+  all.splice(index, 1);
+  return true;
+}

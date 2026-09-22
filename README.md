@@ -16,6 +16,7 @@ Work in progress. Done so far:
 - [x] Data model and fictional demo data (16 leads)
 - [x] Main Dashboard (KPIs, revenue, follow-up alerts, recent leads)
 - [x] Leads screen with search and filters
+- [x] Add, edit and delete a lead, with validation
 
 ## Technologies
 
@@ -62,8 +63,9 @@ js/app.js         Routes and navigation rendering
 js/router.js      Hash router
 js/views/         One file per screen
 js/model.js       Business vocabulary (valid values + Hebrew labels) and data shapes
-js/leads.js       Business rules: overdue, stale, revenue, conversion rate
-js/store.js       Holds the app's leads
+js/leads.js       Business rules: overdue, stale, revenue, conversion rate, filtering
+js/validation.js  Form validation rules
+js/store.js       Holds the app's leads (read, save, delete)
 js/dates.js       Date helpers ('YYYY-MM-DD' strings)
 js/demo-data.js   16 fictional demo leads
 js/html.js        escapeHtml, for user text going into HTML
