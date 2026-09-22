@@ -19,13 +19,6 @@ function placeholderPage(title, subtitle, comingNext) {
   `;
 }
 
-export const renderTasks = () =>
-  placeholderPage(
-    'משימות',
-    'למי צריך לחזור, ומתי.',
-    'כאן יוצגו משימות להיום, משימות באיחור ומשימות קרובות.'
-  );
-
 export const renderAnalytics = () =>
   placeholderPage(
     'אנליטיקס',

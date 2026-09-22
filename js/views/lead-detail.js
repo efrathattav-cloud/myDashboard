@@ -29,6 +29,7 @@ import {
   formatCurrency,
   labelOf,
 } from '../model.js';
+import { getCurrentQuery, replaceQuery } from '../router.js';
 import { addInteraction, changeStatus, createId, getLead } from '../store.js';
 import { isValid, validateInteraction } from '../validation.js';
 import { selectField, textField, textareaField } from './fields.js';
@@ -412,6 +413,14 @@ export function mountLeadDetail(screen, params) {
       input.setAttribute('aria-invalid', 'true');
       input.closest('.field')?.classList.add('field-invalid');
     }
+  }
+
+  // Arriving from the Tasks screen with "?panel=done" opens the panel ready to
+  // mark the pending action as done. The parameter is then removed, so that
+  // redrawing the card later does not reopen it.
+  if (getCurrentQuery().get('panel') === 'done' && hasPendingAction(lead)) {
+    openPanel(true);
+    replaceQuery(`/leads/${encodeURIComponent(params.id)}`, new URLSearchParams());
   }
 
   form.addEventListener('change', updateConditionals);

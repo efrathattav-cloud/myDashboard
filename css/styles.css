@@ -1222,3 +1222,75 @@ select.field-input {
     max-width: 720px;
   }
 }
+
+/* ---------- Tasks ---------- */
+
+.task-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.task-card {
+  display: grid;
+  gap: var(--space-2);
+  border-inline-start: 4px solid var(--color-border);
+}
+
+.task-overdue {
+  border-inline-start-color: var(--color-danger);
+}
+
+.task-today {
+  border-inline-start-color: var(--color-primary);
+}
+
+.task-upcoming {
+  border-inline-start-color: var(--color-success);
+}
+
+.task-when {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.task-when-overdue {
+  color: var(--color-danger);
+}
+
+.task-when-today {
+  color: var(--color-primary-hover);
+}
+
+.task-when-upcoming {
+  color: var(--color-success);
+}
+
+.task-lead {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+.task-action {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.task-actions {
+  margin: var(--space-1) 0 0;
+}
+
+.task-actions .btn {
+  width: 100%;
+}
+
+@media (min-width: 900px) {
+  .task-list {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+
+  .task-actions .btn {
+    width: auto;
+    min-width: 180px;
+  }
+}

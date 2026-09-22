@@ -19,6 +19,7 @@ Work in progress. Done so far:
 - [x] Add, edit and delete a lead, with validation
 - [x] Lead card with details and interaction history
 - [x] Recording interactions, marking actions done, quick status change
+- [x] Tasks screen (overdue, today, upcoming)
 
 ## Technologies
 

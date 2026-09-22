@@ -293,3 +293,25 @@ export function sortLeadsForList(leads, now = today()) {
     return b.createdAt.localeCompare(a.createdAt);
   });
 }
+
+/**
+ * The pending actions, split into the three groups the Tasks screen shows
+ * (SPEC section 12). Each group is sorted by date, oldest first.
+ *
+ * Only leads still in play appear: a won or lost lead has nothing pending,
+ * which is the same rule the rest of this file uses.
+ *
+ * @param {import('./model.js').Lead[]} leads
+ * @param {string} [now]
+ * @returns {{overdue: import('./model.js').Lead[], today: import('./model.js').Lead[], upcoming: import('./model.js').Lead[]}}
+ */
+export function tasksByUrgency(leads, now = today()) {
+  const pending = leads.filter((lead) => isActive(lead) && hasPendingAction(lead));
+  const byDate = (a, b) => a.nextActionDate.localeCompare(b.nextActionDate);
+
+  return {
+    overdue: pending.filter((lead) => lead.nextActionDate < now).sort(byDate),
+    today: pending.filter((lead) => lead.nextActionDate === now).sort(byDate),
+    upcoming: pending.filter((lead) => lead.nextActionDate > now).sort(byDate),
+  };
+}

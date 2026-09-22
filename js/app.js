@@ -4,7 +4,8 @@ import { renderDashboard } from './views/dashboard.js';
 import { mountLeadDetail, renderLeadDetail } from './views/lead-detail.js';
 import { mountLeadForm, renderLeadForm } from './views/lead-form.js';
 import { mountLeads, renderLeads } from './views/leads.js';
-import { renderAnalytics, renderNotFound, renderTasks } from './views/placeholders.js';
+import { renderAnalytics, renderNotFound } from './views/placeholders.js';
+import { renderTasks } from './views/tasks.js';
 
 /**
  * @typedef {Object} Route
