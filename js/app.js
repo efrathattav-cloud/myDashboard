@@ -1,6 +1,6 @@
 import { icons } from './icons.js';
 import { getCurrentPath, matchRoute, startRouter } from './router.js';
-import { renderDashboard } from './views/dashboard.js';
+import { mountDashboard, renderDashboard } from './views/dashboard.js';
 import { mountLeadDetail, renderLeadDetail } from './views/lead-detail.js';
 import { mountLeadForm, renderLeadForm } from './views/lead-form.js';
 import { mountLeads, renderLeads } from './views/leads.js';
@@ -31,7 +31,7 @@ const NAV_ITEMS = [
 
 /** @type {Route[]} */
 const ROUTES = [
-  { path: '/dashboard', title: 'דשבורד', render: renderDashboard, navSection: '/dashboard' },
+  { path: '/dashboard', title: 'דשבורד', render: renderDashboard, mount: mountDashboard, navSection: '/dashboard' },
   { path: '/leads', title: 'לידים', render: renderLeads, mount: mountLeads, navSection: '/leads' },
   // A fixed path must come before a pattern with the same number of segments.
   { path: '/leads/new', title: 'ליד חדש', render: renderLeadForm, mount: mountLeadForm, navSection: '/leads', hideFab: true },

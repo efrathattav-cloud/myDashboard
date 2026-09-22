@@ -15,7 +15,7 @@ import {
   wonLeads,
 } from '../leads.js';
 import { formatCurrency } from '../model.js';
-import { getLeads } from '../store.js';
+import { getLeads, isPersistent, resetDemoData } from '../store.js';
 import { renderLeadCard } from './lead-card.js';
 
 /**
@@ -168,5 +168,54 @@ export function renderDashboard() {
 
     ${attentionSection(leads, now)}
     ${recentSection(leads, now)}
+
+    <section class="demo-zone" aria-labelledby="demo-heading">
+      <h2 class="section-title" id="demo-heading">נתוני הדגמה</h2>
+      <p class="field-hint">
+        ${
+          isPersistent()
+            ? 'זו גרסת הדגמה עם נתונים בדיוניים. השינויים שלך נשמרים בדפדפן הזה בלבד.'
+            : 'הדפדפן חוסם שמירה מקומית, ולכן שינויים ייעלמו ברענון. בחלון פרטי זה מצב רגיל.'
+        }
+      </p>
+      <button class="btn btn-secondary" type="button" data-action="ask-reset">
+        איפוס נתוני ההדגמה
+      </button>
+      <div class="delete-confirm" data-role="reset-confirm" hidden>
+        <p class="delete-question">
+          לאפס את כל הנתונים? כל הלידים שהוספת או ערכת יימחקו, והנתונים הבדיוניים יחזרו למצבם ההתחלתי.
+        </p>
+        <div class="form-actions">
+          <button class="btn btn-danger" type="button" data-action="confirm-reset">כן, לאפס</button>
+          <button class="btn btn-secondary" type="button" data-action="cancel-reset">ביטול</button>
+        </div>
+      </div>
+    </section>
   `;
+}
+
+/**
+ * @param {HTMLElement} screen The element holding this screen's HTML.
+ */
+export function mountDashboard(screen) {
+  const confirmBox = screen.querySelector('[data-role="reset-confirm"]');
+
+  screen.addEventListener('click', (event) => {
+    const action = event.target.closest('[data-action]')?.dataset.action;
+    if (action === 'ask-reset') {
+      confirmBox.hidden = false;
+      confirmBox.querySelector('[data-action="confirm-reset"]').focus();
+    } else if (action === 'cancel-reset') {
+      confirmBox.hidden = true;
+      screen.querySelector('[data-action="ask-reset"]').focus();
+    } else if (action === 'confirm-reset') {
+      resetDemoData();
+      // The hash does not change, so redraw this screen in a fresh element.
+      const dashboard = document.createElement('div');
+      dashboard.innerHTML = renderDashboard();
+      screen.replaceWith(dashboard);
+      mountDashboard(dashboard);
+      window.scrollTo(0, 0);
+    }
+  });
 }

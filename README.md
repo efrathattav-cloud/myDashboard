@@ -21,6 +21,7 @@ Work in progress. Done so far:
 - [x] Recording interactions, marking actions done, quick status change
 - [x] Tasks screen (overdue, today, upcoming)
 - [x] Analytics (conversion rate, funnel, by source, by product)
+- [x] Changes saved in the browser, with a Reset Demo Data option
 
 ## Technologies
 
@@ -70,7 +71,7 @@ js/analytics.js   Period filtering and the Analytics figures
 js/model.js       Business vocabulary (valid values + Hebrew labels) and data shapes
 js/leads.js       Business rules: overdue, stale, revenue, conversion rate, filtering
 js/validation.js  Form validation rules
-js/store.js       Holds the app's leads (read, save, delete)
+js/store.js       Holds the app's leads, and saves them in the browser
 js/dates.js       Date helpers ('YYYY-MM-DD' strings)
 js/demo-data.js   16 fictional demo leads
 js/html.js        escapeHtml, for user text going into HTML

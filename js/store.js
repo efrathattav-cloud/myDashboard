@@ -1,22 +1,118 @@
 // The single place that holds the app's leads.
 //
 // Screens never build or import the demo data themselves – they ask the store.
-// That way, when LocalStorage is added later, only this file changes.
+// Because of that, adding storage changed only this file: not one screen knows
+// where the leads come from.
+//
+// Changes are kept in the browser's own storage, so a refresh does not throw
+// away the morning's work (SPEC section 16). There is still no server and no
+// database: everything lives on this one device, in this one browser.
+//
+// Storage can fail for reasons that are nobody's fault – a private window,
+// blocked site data, a full quota. None of those should stop the app working,
+// so every read and write is wrapped. A failure just means this session is not
+// saved, and the interface says so rather than letting the user find out by
+// losing something.
 
 import { createDemoLeads } from './demo-data.js';
+
+/**
+ * The name the data is filed under. The "v1" is deliberate: if the shape of a
+ * lead ever changes, saving under "v2" leaves the old data alone instead of
+ * feeding new code something it cannot read.
+ */
+const STORAGE_KEY = 'leadflow.leads.v1';
 
 /** @type {import('./model.js').Lead[] | null} */
 let leads = null;
 
+/** Becomes false once a read or write has failed, so the app stops trying. */
+let storageWorks = true;
+
 /**
- * All leads currently in the app.
- * The demo data is created on first use and kept from then on.
+ * Is this actually a list of leads?
+ *
+ * Storage is plain text that anything could have written, including an older
+ * version of this app. Rather than trusting it, the minimum is checked and
+ * anything else is thrown away in favour of the demo data.
+ *
+ * @param {unknown} value
+ */
+function looksLikeLeads(value) {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (lead) =>
+        lead &&
+        typeof lead === 'object' &&
+        typeof lead.id === 'string' &&
+        typeof lead.name === 'string' &&
+        Array.isArray(lead.interactions)
+    )
+  );
+}
+
+/**
+ * Reads the saved leads.
+ *
+ * Two different failures are deliberately kept apart:
+ *   - storage itself is unavailable (a private window, blocked site data).
+ *     Nothing can be saved this session, so say so.
+ *   - storage works but what is in it is unreadable (damaged text, or a shape
+ *     an older version wrote). Storage is fine; the content is simply replaced
+ *     with fresh demo data on the next write.
+ *
+ * Treating the second as the first would tell the user their browser is
+ * blocking saves when it is not.
+ *
+ * @returns {import('./model.js').Lead[] | null} null when there is nothing usable.
+ */
+function readFromStorage() {
+  let raw;
+  try {
+    raw = window.localStorage.getItem(STORAGE_KEY);
+  } catch {
+    storageWorks = false;
+    return null;
+  }
+
+  if (!raw) return null;
+
+  try {
+    const parsed = JSON.parse(raw);
+    return looksLikeLeads(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Writes the current leads out. Does nothing when storage is unavailable. */
+function persist() {
+  if (!storageWorks || leads === null) return;
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(leads));
+  } catch {
+    storageWorks = false;
+  }
+}
+
+/**
+ * All leads currently in the app: whatever was saved before, or a fresh set of
+ * demo leads on the very first visit.
  *
  * @returns {import('./model.js').Lead[]}
  */
 export function getLeads() {
-  if (leads === null) leads = createDemoLeads();
+  if (leads === null) {
+    leads = readFromStorage() ?? createDemoLeads();
+    persist();
+  }
   return leads;
+}
+
+/** Whether changes are being saved. */
+export function isPersistent() {
+  return storageWorks;
 }
 
 /**
@@ -32,6 +128,7 @@ export function getLead(id) {
 /** Throws away every change and brings the demo data back to its starting state. */
 export function resetDemoData() {
   leads = createDemoLeads();
+  persist();
 }
 
 /**
@@ -59,6 +156,7 @@ export function saveLead(lead) {
   const index = all.findIndex((existing) => existing.id === lead.id);
   if (index === -1) all.push(lead);
   else all[index] = lead;
+  persist();
   return lead;
 }
 
@@ -73,6 +171,7 @@ export function deleteLead(id) {
   const index = all.findIndex((lead) => lead.id === id);
   if (index === -1) return false;
   all.splice(index, 1);
+  persist();
   return true;
 }
 
@@ -115,6 +214,7 @@ export function addInteraction(leadId, { interaction, nextAction, customNextActi
     delete lead.customNextAction;
   }
 
+  persist();
   return lead;
 }
 
@@ -131,5 +231,6 @@ export function changeStatus(leadId, status) {
   const lead = getLead(leadId);
   if (!lead || status === 'won' || status === 'lost') return false;
   lead.status = status;
+  persist();
   return true;
 }
