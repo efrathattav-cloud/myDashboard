@@ -20,6 +20,7 @@ Work in progress. Done so far:
 - [x] Lead card with details and interaction history
 - [x] Recording interactions, marking actions done, quick status change
 - [x] Tasks screen (overdue, today, upcoming)
+- [x] Analytics (conversion rate, funnel, by source, by product)
 
 ## Technologies
 
@@ -64,7 +65,8 @@ index.html        App shell (navigation, main area), lang="he" dir="rtl"
 css/styles.css    All styles (mobile first, desktop from 900px, RTL-safe)
 js/app.js         Routes and navigation rendering
 js/router.js      Hash router
-js/views/         One file per screen
+js/views/         One file per screen, plus shared field and chart pieces
+js/analytics.js   Period filtering and the Analytics figures
 js/model.js       Business vocabulary (valid values + Hebrew labels) and data shapes
 js/leads.js       Business rules: overdue, stale, revenue, conversion rate, filtering
 js/validation.js  Form validation rules

@@ -131,3 +131,26 @@ export function formatMonth(month) {
     .toLocaleDateString('he-IL', { month: 'long' });
   return `${name} ${year}`;
 }
+
+/**
+ * The first day of the current week. The week starts on Sunday, as it does in
+ * Israel.
+ *
+ * @returns {string}
+ */
+export function startOfWeek() {
+  const date = new Date();
+  date.setDate(date.getDate() - date.getDay());
+  return toISO(date);
+}
+
+/**
+ * The first day of a month, counting back from the current one.
+ *
+ * @param {number} [monthsBack] 0 is this month, 2 is the month before last.
+ * @returns {string}
+ */
+export function startOfMonth(monthsBack = 0) {
+  const now = new Date();
+  return toISO(new Date(now.getFullYear(), now.getMonth() - monthsBack, 1));
+}

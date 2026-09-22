@@ -4,7 +4,8 @@ import { renderDashboard } from './views/dashboard.js';
 import { mountLeadDetail, renderLeadDetail } from './views/lead-detail.js';
 import { mountLeadForm, renderLeadForm } from './views/lead-form.js';
 import { mountLeads, renderLeads } from './views/leads.js';
-import { renderAnalytics, renderNotFound } from './views/placeholders.js';
+import { renderAnalytics } from './views/analytics.js';
+import { renderNotFound } from './views/not-found.js';
 import { renderTasks } from './views/tasks.js';
 
 /**
