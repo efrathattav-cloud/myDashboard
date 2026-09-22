@@ -19,19 +19,19 @@ import {
 
 /** Main navigation items (Bottom Navigation on mobile, sidebar on desktop). */
 const NAV_ITEMS = [
-  { path: '/dashboard', label: 'Dashboard', icon: icons.dashboard },
-  { path: '/leads', label: 'Leads', icon: icons.leads },
-  { path: '/tasks', label: 'Tasks', icon: icons.tasks },
-  { path: '/analytics', label: 'Analytics', icon: icons.analytics },
+  { path: '/dashboard', label: 'דשבורד', icon: icons.dashboard },
+  { path: '/leads', label: 'לידים', icon: icons.leads },
+  { path: '/tasks', label: 'משימות', icon: icons.tasks },
+  { path: '/analytics', label: 'אנליטיקס', icon: icons.analytics },
 ];
 
 /** @type {Route[]} */
 const ROUTES = [
-  { path: '/dashboard', title: 'Dashboard', render: renderDashboard, navSection: '/dashboard' },
-  { path: '/leads', title: 'Leads', render: renderLeads, navSection: '/leads' },
-  { path: '/leads/new', title: 'New Lead', render: renderNewLead, navSection: '/leads' },
-  { path: '/tasks', title: 'Tasks', render: renderTasks, navSection: '/tasks' },
-  { path: '/analytics', title: 'Analytics', render: renderAnalytics, navSection: '/analytics' },
+  { path: '/dashboard', title: 'דשבורד', render: renderDashboard, navSection: '/dashboard' },
+  { path: '/leads', title: 'לידים', render: renderLeads, navSection: '/leads' },
+  { path: '/leads/new', title: 'ליד חדש', render: renderNewLead, navSection: '/leads' },
+  { path: '/tasks', title: 'משימות', render: renderTasks, navSection: '/tasks' },
+  { path: '/analytics', title: 'אנליטיקס', render: renderAnalytics, navSection: '/analytics' },
 ];
 
 function renderNav(activeSection) {
@@ -58,8 +58,8 @@ function render() {
     console.error(error);
     main.innerHTML = `
       <section class="card placeholder" role="alert">
-        <strong>Something went wrong on this screen.</strong>
-        <a href="#/dashboard">Back to Dashboard</a>
+        <strong>משהו השתבש במסך הזה.</strong>
+        <a href="#/dashboard">חזרה לדשבורד</a>
       </section>`;
   }
 

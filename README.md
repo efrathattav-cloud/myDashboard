@@ -12,6 +12,7 @@ This is an MVP demo: it runs entirely in the browser, with fictional demo data a
 Work in progress. Done so far:
 
 - [x] Project foundation and layout (mobile bottom navigation, desktop sidebar, "New Lead" button, screen routing)
+- [x] Hebrew interface with RTL layout
 
 ## Technologies
 
@@ -21,19 +22,18 @@ Work in progress. Done so far:
 
 ## Run locally
 
-ES modules don't load from `file://`, so serve the folder with any static server. From the project folder, run one of:
+ES modules don't load from `file://`, so the folder has to be served by a static server.
+From the project folder, run:
 
 ```bash
-python -m http.server 8000
+python dev-server.py
 ```
 
-```bash
-npx serve .
-```
+Then open http://localhost:8010.
 
-Then open http://localhost:8000 (or the address `serve` prints).
-
-In VS Code, the "Live Server" extension also works.
+`dev-server.py` is a plain static server that also tells the browser not to cache
+anything, so edits to CSS and JS show up on refresh. It is used for development
+only and is not part of the published site.
 
 ## Build
 
@@ -53,10 +53,11 @@ Not deployed yet.
 ## Project structure
 
 ```text
-index.html        App shell (navigation, main area)
-css/styles.css    All styles (mobile first, desktop from 900px)
+index.html        App shell (navigation, main area), lang="he" dir="rtl"
+css/styles.css    All styles (mobile first, desktop from 900px, RTL-safe)
 js/app.js         Routes and navigation rendering
 js/router.js      Hash router
 js/views.js       Screen views
 js/icons.js       Inline SVG icons
+dev-server.py     Local no-cache dev server (not deployed)
 ```

@@ -73,7 +73,7 @@ a {
 
 .skip-link {
   position: absolute;
-  left: var(--space-2);
+  inset-inline-start: var(--space-2);
   top: -100px;
   z-index: 100;
   padding: var(--space-2) var(--space-3);
@@ -164,8 +164,7 @@ a {
 
 .bottom-nav {
   position: fixed;
-  left: 0;
-  right: 0;
+  inset-inline: 0;
   bottom: 0;
   z-index: 20;
   display: grid;
@@ -200,14 +199,15 @@ a {
 
 .fab {
   position: fixed;
-  right: var(--space-4);
+  inset-inline-end: var(--space-4);
   bottom: calc(var(--bottom-nav-height) + var(--space-4) + env(safe-area-inset-bottom));
   z-index: 15;
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
   min-height: 52px;
-  padding: 0 var(--space-5) 0 var(--space-4);
+  padding-block: 0;
+  padding-inline: var(--space-4) var(--space-5);
   border-radius: 999px;
   background: var(--color-primary);
   color: var(--color-on-primary);
@@ -283,7 +283,7 @@ a {
     height: 100vh;
     padding: var(--space-5) var(--space-4);
     background: var(--color-surface);
-    border-right: 1px solid var(--color-border);
+    border-inline-end: 1px solid var(--color-border);
   }
 
   .nav {

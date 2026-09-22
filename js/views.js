@@ -13,7 +13,7 @@ function placeholderPage(title, subtitle, comingNext) {
       <p class="page-subtitle">${subtitle}</p>
     </header>
     <section class="card placeholder">
-      <strong>Coming soon</strong>
+      <strong>בקרוב</strong>
       <span>${comingNext}</span>
     </section>
   `;
@@ -21,43 +21,43 @@ function placeholderPage(title, subtitle, comingNext) {
 
 export const renderDashboard = () =>
   placeholderPage(
-    'Dashboard',
-    'Your business at a glance.',
-    'KPI cards, revenue, and follow-up alerts will appear here.'
+    'דשבורד',
+    'תמונת המצב של העסק במבט אחד.',
+    'כאן יוצגו כרטיסי KPI, הכנסות והתראות מעקב.'
   );
 
 export const renderLeads = () =>
   placeholderPage(
-    'Leads',
-    'All your leads in one place.',
-    'Search, filters, and the full leads list will appear here.'
+    'לידים',
+    'כל הלידים שלך במקום אחד.',
+    'כאן יוצגו חיפוש, סינון ורשימת הלידים המלאה.'
   );
 
 export const renderTasks = () =>
   placeholderPage(
-    'Tasks',
-    'Who to get back to, and when.',
-    'Today, overdue, and upcoming follow-ups will appear here.'
+    'משימות',
+    'למי צריך לחזור, ומתי.',
+    'כאן יוצגו משימות להיום, משימות באיחור ומשימות קרובות.'
   );
 
 export const renderAnalytics = () =>
   placeholderPage(
-    'Analytics',
-    'Where your leads and clients come from.',
-    'Charts by source, conversion rate, and the sales funnel will appear here.'
+    'אנליטיקס',
+    'מאיפה מגיעים הלידים והלקוחות שלך.',
+    'כאן יוצגו גרפים לפי מקור, אחוז המרה ומשפך המכירה.'
   );
 
 export const renderNewLead = () =>
   placeholderPage(
-    'New Lead',
-    'Add a lead in a few seconds.',
-    'The new lead form will appear here.'
+    'ליד חדש',
+    'הוספת ליד בכמה שניות.',
+    'כאן יוצג טופס הוספת הליד.'
   );
 
 export const renderNotFound = () => `
   <header class="page-header">
-    <h1 class="page-title">Page not found</h1>
-    <p class="page-subtitle">This page doesn't exist.</p>
+    <h1 class="page-title">הדף לא נמצא</h1>
+    <p class="page-subtitle">הדף שחיפשת לא קיים.</p>
   </header>
-  <a class="btn btn-primary" href="#/dashboard">Back to Dashboard</a>
+  <a class="btn btn-primary" href="#/dashboard">חזרה לדשבורד</a>
 `;
