@@ -93,7 +93,7 @@ function attentionSection(leads, now) {
       <div class="alert-list">
         ${alertRow(overdue, overdue === 1 ? 'פעולת מעקב באיחור' : 'פעולות מעקב באיחור', '#/tasks', 'danger')}
         ${alertRow(dueToday, dueToday === 1 ? 'פעולת מעקב להיום' : 'פעולות מעקב להיום', '#/tasks', 'today')}
-        ${alertRow(stale, stale === 1 ? 'לידה שלא קיבלה מענה מעל 5 ימים' : 'לידים שלא קיבלו מענה מעל 5 ימים', '#/leads', 'warning')}
+        ${alertRow(stale, stale === 1 ? 'לידה שלא קיבלה מענה מעל 5 ימים' : 'לידים שלא קיבלו מענה מעל 5 ימים', '#/leads?followup=stale', 'warning')}
       </div>
     </section>`;
 }

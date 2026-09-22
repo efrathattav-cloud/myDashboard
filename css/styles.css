@@ -650,3 +650,125 @@ a {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
 }
+
+/* ---------- Form fields (shared by filters and forms) ---------- */
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.field-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.field-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font: inherit;
+  color: var(--color-text);
+}
+
+.field-input:focus-visible {
+  border-color: var(--color-primary);
+}
+
+select.field-input {
+  /* The arrow the browser draws sits on the end side on its own in RTL. */
+  padding-inline-end: var(--space-2);
+}
+
+.btn-secondary {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.btn-secondary:hover {
+  background: var(--color-bg);
+}
+
+/* ---------- Leads: search and filters ---------- */
+
+.filters {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.filter-panel {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.filter-summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  /* display:flex removes the browser's own triangle, so one is drawn below. */
+  list-style: none;
+}
+
+.filter-summary::-webkit-details-marker {
+  display: none;
+}
+
+/*
+ * The open/closed arrow. Two borders of a square, turned 45 degrees, make a
+ * chevron. The shape is symmetrical, so it reads the same in both directions
+ * and the physical border sides here are deliberate.
+ */
+.filter-summary::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  margin-inline-start: auto;
+  border-right: 2px solid var(--color-text-muted);
+  border-bottom: 2px solid var(--color-text-muted);
+  transform: rotate(45deg);
+}
+
+.filter-panel[open] .filter-summary::after {
+  transform: rotate(-135deg);
+}
+
+.filter-fields {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.filter-clear {
+  width: calc(100% - var(--space-3) * 2);
+  margin: 0 var(--space-3) var(--space-3);
+}
+
+.result-count {
+  margin: 0 0 var(--space-3);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 900px) {
+  .filter-fields {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .filter-clear {
+    width: auto;
+  }
+}

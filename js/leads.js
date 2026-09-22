@@ -183,3 +183,113 @@ export function attentionSummary(leads, now = today()) {
     stale: leads.filter((lead) => isStale(lead, now)).length,
   };
 }
+
+// ---------- Search and filters (SPEC sections 7.1 and 7.2) ----------
+
+/**
+ * Does the lead match one of the follow-up situations?
+ *
+ * @param {import('./model.js').Lead} lead
+ * @param {keyof import('./model.js').FOLLOW_UP_FILTERS} situation
+ * @param {string} now
+ */
+function matchesFollowUp(lead, situation, now) {
+  switch (situation) {
+    case 'today':
+      return isDueToday(lead, now);
+    case 'overdue':
+      return isOverdue(lead, now);
+    case 'none':
+      return isActive(lead) && !hasPendingAction(lead);
+    case 'stale':
+      return isStale(lead, now);
+    default:
+      return true; // an unknown value filters nothing out
+  }
+}
+
+/**
+ * Does the lead match the free-text search?
+ * Searches name, phone and notes (SPEC section 7.1).
+ *
+ * Phone numbers are compared digit by digit, so searching "0524" finds
+ * "052-4471903" even though the stored number contains a dash.
+ *
+ * @param {import('./model.js').Lead} lead
+ * @param {string} text Already trimmed and lower-cased.
+ */
+function matchesQuery(lead, text) {
+  const digits = text.replace(/\D/g, '');
+  if (digits && lead.phone.replace(/\D/g, '').includes(digits)) return true;
+  return (
+    lead.name.toLowerCase().includes(text) ||
+    (lead.notes ?? '').toLowerCase().includes(text)
+  );
+}
+
+/**
+ * @typedef {Object} LeadFilters
+ * @property {string} [query]       Free text for name, phone and notes.
+ * @property {string} [source]
+ * @property {string} [status]
+ * @property {string} [temperature]
+ * @property {string} [product]
+ * @property {string} [followUp]    One of FOLLOW_UP_FILTERS.
+ */
+
+/**
+ * The leads matching every filter that was set.
+ * An empty or missing filter is ignored, so filters combine with "and".
+ *
+ * @param {import('./model.js').Lead[]} leads
+ * @param {LeadFilters} filters
+ * @param {string} [now]
+ * @returns {import('./model.js').Lead[]}
+ */
+export function filterLeads(leads, filters, now = today()) {
+  const text = (filters.query ?? '').trim().toLowerCase();
+
+  return leads.filter((lead) => {
+    if (filters.source && lead.source !== filters.source) return false;
+    if (filters.status && lead.status !== filters.status) return false;
+    if (filters.temperature && lead.temperature !== filters.temperature) return false;
+    if (filters.product && !lead.products.includes(filters.product)) return false;
+    if (filters.followUp && !matchesFollowUp(lead, filters.followUp, now)) return false;
+    if (text && !matchesQuery(lead, text)) return false;
+    return true;
+  });
+}
+
+/**
+ * How many filters are actually narrowing the list.
+ * Used to tell the user that a filter is on even when the panel is closed.
+ *
+ * @param {LeadFilters} filters
+ * @returns {number}
+ */
+export function countActiveFilters(filters) {
+  return ['source', 'status', 'temperature', 'product', 'followUp'].filter(
+    (name) => filters[name]
+  ).length;
+}
+
+/**
+ * Leads sorted for the list: the ones needing attention first, then the most
+ * recently created. Within the attention group, the most overdue comes first.
+ *
+ * @param {import('./model.js').Lead[]} leads
+ * @param {string} [now]
+ */
+export function sortLeadsForList(leads, now = today()) {
+  return [...leads].sort((a, b) => {
+    const attentionA = needsAttention(a, now) ? 0 : 1;
+    const attentionB = needsAttention(b, now) ? 0 : 1;
+    if (attentionA !== attentionB) return attentionA - attentionB;
+
+    // Both need attention: the older the pending date, the higher it goes.
+    if (attentionA === 0 && a.nextActionDate && b.nextActionDate) {
+      return a.nextActionDate.localeCompare(b.nextActionDate);
+    }
+    return b.createdAt.localeCompare(a.createdAt);
+  });
+}

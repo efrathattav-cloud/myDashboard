@@ -19,13 +19,6 @@ function placeholderPage(title, subtitle, comingNext) {
   `;
 }
 
-export const renderLeads = () =>
-  placeholderPage(
-    'לידים',
-    'כל הלידים שלך במקום אחד.',
-    'כאן יוצגו חיפוש, סינון ורשימת הלידים המלאה.'
-  );
-
 export const renderTasks = () =>
   placeholderPage(
     'משימות',

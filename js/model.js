@@ -90,6 +90,14 @@ export const LOST_REASONS = {
   other: 'אחר',
 };
 
+/** The follow-up situations a lead can be filtered by (SPEC section 7.2). */
+export const FOLLOW_UP_FILTERS = {
+  today: 'לביצוע היום',
+  overdue: 'באיחור',
+  none: 'ללא פעולה הבאה',
+  stale: 'ללא מענה מעל 5 ימים',
+};
+
 /**
  * Statuses of a lead that is still in play.
  * Won and lost leads are finished, so follow-up rules do not apply to them.

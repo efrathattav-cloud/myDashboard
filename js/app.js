@@ -1,9 +1,9 @@
 import { icons } from './icons.js';
 import { getCurrentPath, matchRoute, startRouter } from './router.js';
 import { renderDashboard } from './views/dashboard.js';
+import { mountLeads, renderLeads } from './views/leads.js';
 import {
   renderAnalytics,
-  renderLeads,
   renderNewLead,
   renderNotFound,
   renderTasks,
@@ -14,6 +14,8 @@ import {
  * @property {string} path
  * @property {string} title       Used in the browser tab title.
  * @property {() => string} render
+ * @property {(main: HTMLElement) => void} [mount] Runs after the HTML is on the
+ *   page. This is where a screen attaches its event listeners.
  * @property {string} [navSection] Which nav item is highlighted on this route.
  */
 
@@ -28,7 +30,7 @@ const NAV_ITEMS = [
 /** @type {Route[]} */
 const ROUTES = [
   { path: '/dashboard', title: 'דשבורד', render: renderDashboard, navSection: '/dashboard' },
-  { path: '/leads', title: 'לידים', render: renderLeads, navSection: '/leads' },
+  { path: '/leads', title: 'לידים', render: renderLeads, mount: mountLeads, navSection: '/leads' },
   { path: '/leads/new', title: 'ליד חדש', render: renderNewLead, navSection: '/leads' },
   { path: '/tasks', title: 'משימות', render: renderTasks, navSection: '/tasks' },
   { path: '/analytics', title: 'אנליטיקס', render: renderAnalytics, navSection: '/analytics' },
@@ -54,6 +56,8 @@ function render() {
 
   try {
     main.innerHTML = route ? route.render() : renderNotFound();
+    // Listeners can only be attached once the elements exist on the page.
+    route?.mount?.(main);
   } catch (error) {
     console.error(error);
     main.innerHTML = `

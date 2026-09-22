@@ -15,6 +15,7 @@ Work in progress. Done so far:
 - [x] Hebrew interface with RTL layout
 - [x] Data model and fictional demo data (16 leads)
 - [x] Main Dashboard (KPIs, revenue, follow-up alerts, recent leads)
+- [x] Leads screen with search and filters
 
 ## Technologies
 
