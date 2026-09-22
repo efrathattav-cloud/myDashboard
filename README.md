@@ -9,7 +9,9 @@ This is an MVP demo: it runs entirely in the browser, with fictional demo data a
 
 ## Status
 
-Work in progress. Done so far:
+The MVP is complete: all 24 acceptance criteria in `SPEC.en.md` pass.
+
+Done:
 
 - [x] Project foundation and layout (mobile bottom navigation, desktop sidebar, "New Lead" button, screen routing)
 - [x] Hebrew interface with RTL layout
@@ -23,6 +25,23 @@ Work in progress. Done so far:
 - [x] Analytics (conversion rate, funnel, by source, by product)
 - [x] Changes saved in the browser, with a Reset Demo Data option
 - [x] Accessibility, mobile and RTL review
+- [x] All 24 acceptance criteria in `SPEC.en.md` verified
+
+## Features
+
+- **Dashboard** – four KPIs, revenue for the current month, a "needs attention"
+  section, and the most recent leads.
+- **Leads** – search by name, phone or notes, and five filters that combine.
+  The search and filters live in the address bar, so a filtered view survives a
+  refresh and can be linked to.
+- **Lead form** – add, edit and delete, with validation, multiple products,
+  conditional sections for a sale or a reason a lead did not close.
+- **Lead card** – every detail, the conversation history, and quick actions:
+  record an interaction, mark the pending action done, change the status.
+- **Tasks** – overdue, today and upcoming, each with a "done" action.
+- **Analytics** – conversion rate, sales funnel, leads and clients by source,
+  revenue by source, interest by product, over four periods.
+- Changes are saved in the browser, and can be reset to the demo data.
 
 ## Technologies
 
@@ -55,6 +74,13 @@ There is no build step. The files in this folder are the production site.
 2. In the repository, go to **Settings → Pages**.
 3. Under **Source**, choose **Deploy from a branch**, then the `main` branch and the `/ (root)` folder.
 4. The site will be available at `https://<your-username>.github.io/<repository-name>/`.
+
+Nothing needs configuring. Every path in the project is relative, so the app
+works from a repository sub-path, and routing uses the URL hash, so refreshing
+on any screen lands on that screen instead of a 404. The empty `.nojekyll` file
+stops GitHub processing the files as a Jekyll site.
+
+Verified by serving the repository from a sub-folder and walking every screen.
 
 ## Live demo
 
