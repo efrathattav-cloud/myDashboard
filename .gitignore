@@ -18,3 +18,6 @@ desktop.ini
 
 # Local backups
 *.backup.md
+
+# Exported data. Generated from the app; not source code.
+leadflow-*.csv
