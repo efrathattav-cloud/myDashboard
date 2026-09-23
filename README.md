@@ -84,7 +84,10 @@ Verified by serving the repository from a sub-folder and walking every screen.
 
 ## Live demo
 
-Not deployed yet.
+**https://efrathattav-cloud.github.io/myDashboard/**
+
+Fictional demo data. Anything you change is saved in your own browser only,
+and "Reset Demo Data" at the bottom of the Dashboard puts it back.
 
 ## Project structure
 
