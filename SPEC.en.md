@@ -93,6 +93,8 @@ In the first version:
 
 The system should be built so that integrations of this kind can be added in the future.
 
+> **Post-MVP update:** once the MVP was complete, a CSV export and an **optional** Airtable connection for storing the leads were added. By default there is still no Database and no server. See section 26.
+
 ---
 
 ## 5. UX/UI Principles
@@ -527,6 +529,8 @@ Short textarea.
 
 The data should be saved so that Analytics on reasons for not closing can be shown in the future.
 
+> **Post-MVP update:** these Analytics are now implemented. See section 13.8.
+
 ---
 
 # 12. Screen 5 – Tasks / Follow-up
@@ -621,6 +625,8 @@ For example:
 - 10 reached the offer / considering stage.
 - 5 became clients.
 
+The system stores only each lead's current status, so the funnel stages are inferred from it: a lead who was quoted a price and then said no still counts at every stage she reached. A hint line under the chart must say so, so the user knows how to read it.
+
 ---
 
 ## 13.6 Revenue by Source
@@ -640,6 +646,23 @@ Show how many leads were interested in each product:
 - Personal coaching.
 - Starting to Move.
 - 5-Day Challenge.
+
+---
+
+## 13.8 Why Leads Did Not Close
+
+*(Added after the MVP, from the data saved under section 11.)*
+
+A chart showing how many leads did not close for each reason.
+
+This is the one chart on the screen that points at **what to change** instead of only describing what happened: a lot of "price too high" points to a pricing problem, and a lot of "didn't get back to me" points to a follow-up problem.
+
+Rules:
+- Only reasons that actually occurred are listed. Showing all seven with five at zero would bury the ones that matter.
+- Free text entered under "Other" is shown beneath its bar, because "Other: 1" tells nobody anything.
+- A hint line says how many leads did not close and what share of the period's leads that is.
+- The same period rule as the rest of the screen applies: a lead belongs to the period she came in.
+- When no lead was lost in the period, a positive empty state is shown instead of an empty chart.
 
 ---
 
@@ -829,6 +852,8 @@ Add an option:
 
 to restore the demo data to its initial state.
 
+> **Post-MVP update:** the leads can optionally be kept in Airtable instead of the browser (section 26.2). Even then, `Reset Demo Data` affects only the browser and never deletes the Airtable table.
+
 ---
 
 # 17. Responsive Design
@@ -946,6 +971,7 @@ Not to be implemented in the first phase, but should be taken into account in th
 - Lead capture from WhatsApp.
 - Facebook / Instagram integration.
 - Email integration.
+- ~~Storing the data externally~~: implemented as an optional Airtable connection (section 26).
 
 ### Communication
 - Sending WhatsApp from the lead card.
@@ -1009,3 +1035,80 @@ The user should be able to open the app and answer three questions within a few 
 3. **Where do the clients who actually buy come from?**
 
 Every UX decision or feature should be tested against these three questions.
+
+---
+
+# 26. Post-MVP Extensions
+
+After all 24 criteria in section 24 passed, the following extensions were added. None of them changes the default: with nothing configured, the app still runs entirely in the browser with Demo data.
+
+## 26.1 CSV Export
+
+At the bottom of the Dashboard, an **Export data** button (ייצוא הנתונים) downloads two files:
+
+| File | One row per | Key columns |
+|---|---|---|
+| `leadflow-leads-<date>.csv` | lead | every detail of the lead, including `מזהה` (id) |
+| `leadflow-interactions-<date>.csv` | interaction | `ליד` (name), `מזהה הליד` (lead id) |
+
+- There are two files rather than one, because a lead has many interactions and a single row cannot hold them. This is also how it is modelled in Airtable: a leads table, an interactions table, and a link between them.
+- The files are UTF-8 with a BOM, so Hebrew opens correctly in Excel too.
+- Column names are in Hebrew, and values are the words the app shows, not internal keys.
+- The files are built in the browser and nothing is sent to a server.
+
+## 26.2 Airtable as the Leads Store (Optional)
+
+A new **Settings** screen (הגדרות, linked from the bottom of the Dashboard) lets the user choose where the leads are kept:
+- **This browser**: the default, as in section 16.
+- **Airtable**: enter a Personal Access Token, a Base id and a table name.
+
+### Behaviour
+- The leads are fetched from Airtable once when the app starts, before the first render.
+- Every change is written to Airtable in the background, and the screens themselves did not change.
+- A status line under the header shows the sync state and any write errors. It does not move the rest of the screen, including on the Desktop layout.
+- The browser always keeps its own copy. A failed write loses nothing, and if Airtable cannot be reached at startup the app carries on with the local copy instead of showing an empty screen.
+- The settings are not saved until a test request to Airtable succeeds, so a typo cannot leave the app pointing at a table that does not exist.
+
+### What is synced
+| | |
+|---|---|
+| Lead details, status, prices, the sale, the reason for not closing | Written to Airtable |
+| Interactions | Kept in the browser, because one row cannot hold many conversations |
+| `Reset Demo Data` | Affects only the browser |
+
+### Table structure
+- Column names are in Hebrew and identical to the CSV export (26.1), so a table created by importing that file works as-is.
+- Select fields hold the Hebrew words as the app shows them.
+- Updates are sent with PUT, so a field cleared in the app is cleared in the table.
+
+### Rows edited by hand in Airtable
+The table can be edited directly, so nothing coming back from it is trusted:
+- An unknown value in a select field falls back to a default.
+- A row with no name is skipped and reported.
+- A "Closed" lead with no price gets no sale, rather than a broken one.
+- A closed lead never carries a pending action.
+- A row added by hand, with no id of ours, uses Airtable's record id.
+
+### Security: the Token
+The token is a key to the whole Base, and the site is static and public (GitHub Pages).
+- **The token is never in the code or the repository.** Bots scan public repositories for exactly such keys.
+- It is entered in the app and kept only in that browser's storage. Someone opening the public site is asked for their own token and never sees anyone else's data.
+- The Settings screen recommends creating a token with only the `data.records:read` and `data.records:write` scopes, limited to a single Base.
+- The token is never displayed back on screen.
+
+### Error messages
+Airtable's own messages are terse, so the screen explains the likely cause:
+- **401**: the token's shape is checked (without displaying it) and the likely mistake is named: something else was copied, it was cut off before the dot in the middle, it is too short, or it contains a line break. Only its length is shown.
+- **403**: a missing scope, or the token was not given access to this Base.
+- **404**: the Base id or table name is wrong.
+- **No response**: no network connection, or the request was blocked.
+
+## 26.3 Acceptance Criteria for the Extensions
+
+25. Analytics shows the reasons leads did not close, including the "Other" details.
+26. Leads and interactions can be exported to two CSV files that open correctly in Hebrew.
+27. An Airtable table can be connected from Settings, and the connection is saved only after a successful test.
+28. When connected to Airtable, changes in the app are saved to the table and loaded from it on the next start.
+29. The token does not appear in the code, the repository or on screen.
+30. An Airtable failure does not lose data or leave an empty screen.
+31. `Reset Demo Data` does not touch the Airtable table.

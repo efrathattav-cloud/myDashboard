@@ -4,7 +4,7 @@ LeadFlow is a simple, mobile-first dashboard for managing leads in a small coach
 
 This is an MVP demo: it runs entirely in the browser, with fictional demo data and no backend or database.
 
-- Product requirements: [`SPEC.en.md`](SPEC.en.md)
+- Product requirements: [`SPEC.md`](SPEC.md) (Hebrew), [`SPEC.en.md`](SPEC.en.md) (English)
 - Development practices: [`PRACTICE.md`](PRACTICE.md)
 
 ## Status
