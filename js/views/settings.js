@@ -7,6 +7,7 @@
 import { escapeHtml } from '../html.js';
 import { testConnection } from '../airtable.js';
 import {
+  describeTokenProblem,
   forgetConnection,
   getConnection,
   maskToken,
@@ -123,6 +124,35 @@ export function mountSettings(screen) {
   const form = screen.querySelector('#connection-form');
   const message = screen.querySelector('[data-role="connection-message"]');
 
+  /**
+   * Turns Airtable's answer into something act-on-able.
+   *
+   * Its own messages are accurate but terse: "401 Authentication required"
+   * does not say that half the token was left behind during the copy, which
+   * is what it usually means.
+   *
+   * @param {string} message What Airtable said.
+   * @param {string} token What was entered, never shown.
+   */
+  function explain(message, token) {
+    if (message.includes('401')) {
+      const problem = describeTokenProblem(token);
+      return problem
+        ? `איירטייבל דחתה את המפתח. ${problem}`
+        : 'איירטייבל דחתה את המפתח. הוא נראה תקין, כך שכנראה הוא שגוי, נמחק, או שההעתקה לא הושלמה. כדאי ליצור מפתח חדש ולהעתיק אותו בכפתור ההעתקה.';
+    }
+    if (message.includes('403')) {
+      return 'המפתח תקין אבל אין לו הרשאה. יש לוודא שנבחרו data.records:read ו־data.records:write, ושה־base הזה נוסף תחת Access.';
+    }
+    if (message.includes('404')) {
+      return 'לא נמצאה טבלה בשם הזה ב־base הזה. כדאי לבדוק את שם הטבלה ואת מזהה ה־base.';
+    }
+    if (message.includes('Failed to fetch') || message.includes('NetworkError')) {
+      return 'לא הצלחנו להגיע לאיירטייבל. ייתכן שאין חיבור לאינטרנט, או שתוסף בדפדפן חוסם את הבקשה.';
+    }
+    return message;
+  }
+
   /** @param {string} text @param {'ok'|'error'} tone */
   function say(text, tone) {
     message.textContent = text;
@@ -183,7 +213,7 @@ export function mountSettings(screen) {
       say('בודק…', 'ok');
       const result = await testConnection(connection);
       if (result.ok) say('החיבור תקין. הטבלה נמצאה.', 'ok');
-      else say(`החיבור נכשל — ${result.message}`, 'error');
+      else say(explain(result.message, connection.token), 'error');
       return;
     }
 
@@ -210,7 +240,7 @@ export function mountSettings(screen) {
     if (!test.ok) {
       // Nothing is saved until it is known to work, so a typo cannot leave the
       // app pointing at a table that is not there.
-      say(`החיבור נכשל — ${test.message}`, 'error');
+      say(explain(test.message, connection.token), 'error');
       return;
     }
 

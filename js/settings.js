@@ -109,6 +109,34 @@ export function usingAirtable(connection = getConnection()) {
 }
 
 /**
+ * What looks wrong about a token, without ever printing the token itself.
+ *
+ * Airtable answers a bad token with "401 Authentication required" and nothing
+ * more, which is no help at all when the real problem is that half of it was
+ * left behind during the copy. An Airtable personal access token has a
+ * recognisable shape – it starts with "pat", contains a dot, and is around
+ * eighty characters – so the common mistakes can be named.
+ *
+ * @param {string} token
+ * @returns {string} '' when nothing looks obviously wrong.
+ */
+export function describeTokenProblem(token) {
+  const value = (token ?? '').trim();
+
+  if (!value) return 'לא הוזן מפתח.';
+  if (!value.startsWith('pat')) return 'המפתח אינו מתחיל ב־pat — ייתכן שהועתק משהו אחר.';
+  if (!value.includes('.')) {
+    return `במפתח של איירטייבל יש נקודה באמצע, ובמה שהוזן אין. סימן שההעתקה נקטעה. (הוזנו ${value.length} תווים, בדרך כלל יש כ־80.)`;
+  }
+  if (value.length < 60) {
+    return `המפתח קצר מהצפוי — הוזנו ${value.length} תווים במקום כ־80. סימן שההעתקה חלקית.`;
+  }
+  if (/\s/.test(value)) return 'במפתח יש רווח או מעבר שורה. יש להדביק אותו כמקטע אחד רצוף.';
+
+  return '';
+}
+
+/**
  * A token with its middle hidden, for showing back on screen.
  * The whole point of keeping it out of sight is lost if the interface prints
  * it in full.
