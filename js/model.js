@@ -122,6 +122,22 @@ export function labelOf(map, key, customText) {
 }
 
 /**
+ * The stored key behind a Hebrew label – the reverse of labelOf().
+ *
+ * Needed when data comes back from somewhere that holds labels rather than
+ * keys, such as an Airtable single-select column, which stores the words the
+ * user picked.
+ *
+ * @param {Record<string, string>} map One of the maps above.
+ * @param {string} [label]
+ * @returns {string | undefined} undefined when no key has that label.
+ */
+export function keyOf(map, label) {
+  if (!label) return undefined;
+  return Object.keys(map).find((key) => map[key] === label);
+}
+
+/**
  * Money, the way it is written in the app: ₪8,680.
  * Whole shekels only – the business does not quote agorot.
  *

@@ -14,7 +14,9 @@
 // saved, and the interface says so rather than letting the user find out by
 // losing something.
 
+import * as airtable from './airtable.js';
 import { createDemoLeads } from './demo-data.js';
+import { getConnection, usingAirtable } from './settings.js';
 
 /**
  * The name the data is filed under. The "v1" is deliberate: if the shape of a
@@ -28,6 +30,92 @@ let leads = null;
 
 /** Becomes false once a read or write has failed, so the app stops trying. */
 let storageWorks = true;
+
+/**
+ * How the app is storing leads right now.
+ * 'browser' is the default and the fallback; 'airtable' is used only after a
+ * successful load, so a failed connection never leaves the app with no data.
+ * @type {'browser' | 'airtable'}
+ */
+let source = 'browser';
+
+/**
+ * What the background writing to Airtable is doing, for the interface to show.
+ * @type {{state: 'idle' | 'saving' | 'error', message: string, pending: number}}
+ */
+const sync = { state: 'idle', message: '', pending: 0 };
+
+/** Called whenever the sync state changes, so the interface can redraw. */
+let onSyncChange = () => {};
+
+/** @param {() => void} listener */
+export function watchSync(listener) {
+  onSyncChange = listener;
+}
+
+/** @returns {{source: string, state: string, message: string, pending: number}} */
+export function getSyncStatus() {
+  return { source, ...sync };
+}
+
+function setSync(state, message = '') {
+  sync.state = state;
+  sync.message = message;
+  onSyncChange();
+}
+
+/**
+ * Sends a change to Airtable without making the caller wait.
+ *
+ * The screens stay synchronous: the change is already in memory and on screen,
+ * and this catches up in the background. A failure is reported in the status
+ * line rather than thrown, because the change is not lost – it is still here,
+ * and still in this browser's own storage.
+ *
+ * @param {() => Promise<void>} work
+ */
+function pushToAirtable(work) {
+  if (source !== 'airtable') return;
+
+  sync.pending += 1;
+  setSync('saving');
+
+  work()
+    .then(() => {
+      sync.pending -= 1;
+      if (sync.pending === 0) setSync('idle');
+    })
+    .catch((error) => {
+      sync.pending -= 1;
+      setSync('error', String(error.message ?? error));
+    });
+}
+
+/**
+ * Loads the leads from Airtable and switches the app over to it.
+ *
+ * Called once when the app starts. If it fails, the app carries on with this
+ * browser's storage: a connection problem should not leave someone staring at
+ * an empty screen.
+ *
+ * @returns {Promise<{ok: true, count: number, skipped: string[]} | {ok: false, message: string}>}
+ */
+export async function loadFromAirtable() {
+  const connection = getConnection();
+  if (!usingAirtable(connection)) return { ok: false, message: 'לא מוגדר חיבור לאיירטייבל.' };
+
+  try {
+    const { leads: fetched, skipped } = await airtable.fetchLeads(connection);
+    leads = fetched;
+    source = 'airtable';
+    setSync('idle');
+    return { ok: true, count: fetched.length, skipped };
+  } catch (error) {
+    source = 'browser';
+    setSync('error', String(error.message ?? error));
+    return { ok: false, message: String(error.message ?? error) };
+  }
+}
 
 /**
  * Is this actually a list of leads?
@@ -86,7 +174,13 @@ function readFromStorage() {
   }
 }
 
-/** Writes the current leads out. Does nothing when storage is unavailable. */
+/**
+ * Writes the current leads out.
+ *
+ * This keeps happening even when Airtable is the source: the browser copy is
+ * then a local cache, so a lost connection still shows the last known leads
+ * instead of nothing.
+ */
 function persist() {
   if (!storageWorks || leads === null) return;
   try {
@@ -125,10 +219,18 @@ export function getLead(id) {
   return getLeads().find((lead) => lead.id === id);
 }
 
-/** Throws away every change and brings the demo data back to its starting state. */
+/**
+ * Throws away every change and brings the demo data back to its starting state.
+ *
+ * This only ever touches this browser. Wiping an Airtable table because
+ * someone pressed "reset demo data" would be a very expensive surprise, so the
+ * app switches back to its own storage instead.
+ */
 export function resetDemoData() {
   leads = createDemoLeads();
+  source = 'browser';
   persist();
+  setSync('idle');
 }
 
 /**
@@ -154,9 +256,23 @@ export function createId(prefix = 'lead') {
 export function saveLead(lead) {
   const all = getLeads();
   const index = all.findIndex((existing) => existing.id === lead.id);
-  if (index === -1) all.push(lead);
+  const isNew = index === -1;
+  if (isNew) all.push(lead);
   else all[index] = lead;
   persist();
+
+  pushToAirtable(async () => {
+    const connection = getConnection();
+    if (lead.airtableId) {
+      await airtable.updateLead(connection, lead.airtableId, lead);
+    } else {
+      // Keep the record id, so the next edit updates this row instead of
+      // adding a second one for the same lead.
+      lead.airtableId = await airtable.createLead(connection, lead);
+      persist();
+    }
+  });
+
   return lead;
 }
 
@@ -170,8 +286,13 @@ export function deleteLead(id) {
   const all = getLeads();
   const index = all.findIndex((lead) => lead.id === id);
   if (index === -1) return false;
-  all.splice(index, 1);
+  const [removed] = all.splice(index, 1);
   persist();
+
+  if (removed.airtableId) {
+    pushToAirtable(() => airtable.deleteLead(getConnection(), removed.airtableId));
+  }
+
   return true;
 }
 
@@ -215,6 +336,11 @@ export function addInteraction(leadId, { interaction, nextAction, customNextActi
   }
 
   persist();
+  // The conversation itself stays in this browser – one row cannot hold many –
+  // but the date and the next action it changed do belong in the table.
+  if (lead.airtableId) {
+    pushToAirtable(() => airtable.updateLead(getConnection(), lead.airtableId, lead));
+  }
   return lead;
 }
 
@@ -232,5 +358,8 @@ export function changeStatus(leadId, status) {
   if (!lead || status === 'won' || status === 'lost') return false;
   lead.status = status;
   persist();
+  if (lead.airtableId) {
+    pushToAirtable(() => airtable.updateLead(getConnection(), lead.airtableId, lead));
+  }
   return true;
 }

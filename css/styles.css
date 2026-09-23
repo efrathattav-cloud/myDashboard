@@ -1729,3 +1729,68 @@ select.field-input {
     grid-column: auto;
   }
 }
+
+/* ---------- Sync status ---------- */
+
+/*
+ * One quiet line under the header. Silent while the leads are local and
+ * everything is fine; it only speaks when there is something to say.
+ */
+.sync-status {
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.sync-status[hidden] {
+  display: none;
+}
+
+.sync-status-idle {
+  background: #e6f4ec;
+  color: var(--color-success);
+}
+
+.sync-status-saving {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-hover);
+}
+
+.sync-status-error {
+  background: #fdecea;
+  color: var(--color-danger);
+}
+
+/* ---------- Settings ---------- */
+
+.source-state {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.source-state-connected {
+  color: var(--color-success);
+}
+
+.help-list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-inline-start: var(--space-5);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.help-list li {
+  padding-inline-start: var(--space-1);
+}
+
+/* A message that is good news wears the success colours, not the alarm ones. */
+.form-summary-ok {
+  background: #e6f4ec;
+  border-color: #b8dfc8;
+  color: var(--color-success);
+}

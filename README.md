@@ -45,7 +45,46 @@ Done:
   leads and clients by source, revenue by source, interest by product, over
   four periods.
 - Changes are saved in the browser, and can be reset to the demo data.
+- **Optional Airtable backend** – keep the leads in an Airtable table instead.
 - **CSV export** – two files, ready to import into Airtable or a spreadsheet.
+
+## Using Airtable as the database
+
+**Settings** (linked from the bottom of the Dashboard) can point the app at an
+Airtable table instead of this browser. The leads are then fetched when the app
+starts and every change is written back in the background.
+
+### About the token
+
+Airtable needs a personal access token, and that token is a key to the whole
+base. This site is static and public, so a token written into the code would be
+readable by anyone who opened the page or this repository — and bots scan
+public repositories for exactly that.
+
+So **the token is never in the code and never in this repository**. It is typed
+into the app and kept in that browser's own storage, like the leads. Someone
+else opening the published site sees an app asking for their own token, not
+this one's data. Clearing site data removes it locally; revoking it properly is
+done at Airtable.
+
+When creating the token, give it `data.records:read` and `data.records:write`,
+and scope its access to **that one base** rather than the whole account.
+
+### What is and is not synced
+
+| | |
+|---|---|
+| Lead fields, status, prices, the sale, the reason one did not close | Written to Airtable |
+| Interactions | Kept in the browser — one row cannot hold many conversations |
+| "Reset demo data" | Only ever touches this browser, never the Airtable table |
+
+A failed write is reported in a status line under the header; the change is not
+lost, because the browser keeps its own copy either way. If the app cannot
+reach Airtable at startup it carries on with that copy rather than showing an
+empty screen.
+
+The table must have the Hebrew column names the export produces — the two match
+on purpose, so a table built by importing the CSV works as-is.
 
 ## Exporting to Airtable
 
@@ -133,7 +172,9 @@ js/analytics.js   Period filtering and the Analytics figures
 js/model.js       Business vocabulary (valid values + Hebrew labels) and data shapes
 js/leads.js       Business rules: overdue, stale, revenue, conversion rate, filtering
 js/validation.js  Form validation rules
-js/store.js       Holds the app's leads, and saves them in the browser
+js/store.js       Holds the app's leads; saves to the browser and to Airtable
+js/airtable.js    Airtable API client and the mapping to and from a lead
+js/settings.js    Where the leads live, and the token (browser only)
 js/dates.js       Date helpers ('YYYY-MM-DD' strings)
 js/demo-data.js   16 fictional demo leads
 js/html.js        escapeHtml, for user text going into HTML

@@ -1,11 +1,14 @@
 import { icons } from './icons.js';
 import { getCurrentPath, matchRoute, startRouter } from './router.js';
+import { getSyncStatus, loadFromAirtable, watchSync } from './store.js';
+import { usingAirtable } from './settings.js';
 import { mountDashboard, renderDashboard } from './views/dashboard.js';
 import { mountLeadDetail, renderLeadDetail } from './views/lead-detail.js';
 import { mountLeadForm, renderLeadForm } from './views/lead-form.js';
 import { mountLeads, renderLeads } from './views/leads.js';
 import { renderAnalytics } from './views/analytics.js';
 import { renderNotFound } from './views/not-found.js';
+import { mountSettings, renderSettings } from './views/settings.js';
 import { mountTasks, renderTasks } from './views/tasks.js';
 
 /**
@@ -39,6 +42,7 @@ const ROUTES = [
   { path: '/leads/:id', title: 'כרטיס ליד', render: renderLeadDetail, mount: mountLeadDetail, navSection: '/leads', hideFab: true },
   { path: '/tasks', title: 'משימות', render: renderTasks, mount: mountTasks, navSection: '/tasks' },
   { path: '/analytics', title: 'אנליטיקס', render: renderAnalytics, navSection: '/analytics' },
+  { path: '/settings', title: 'הגדרות', render: renderSettings, mount: mountSettings, hideFab: true },
 ];
 
 function renderNav(activeSection) {
@@ -84,4 +88,45 @@ function render() {
   window.scrollTo(0, 0);
 }
 
-startRouter(render);
+/**
+ * The one line in the app that shows what the background writing to Airtable
+ * is doing. Silent while everything is fine and the leads are local.
+ */
+function renderSyncStatus() {
+  const bar = document.getElementById('sync-status');
+  const { source, state, message } = getSyncStatus();
+
+  if (source !== 'airtable' && state !== 'error') {
+    bar.hidden = true;
+    return;
+  }
+
+  const text =
+    state === 'saving' ? 'שומר באיירטייבל…'
+    : state === 'error' ? `שמירה באיירטייבל נכשלה — ${message}`
+    : 'מסונכרן עם איירטייבל';
+
+  bar.className = `sync-status sync-status-${state}`;
+  bar.textContent = text;
+  bar.hidden = false;
+}
+
+watchSync(renderSyncStatus);
+
+/**
+ * Starts the app.
+ *
+ * When Airtable is set up, its leads are fetched before the first screen is
+ * drawn, so nothing flashes the browser's copy and then replaces it. If that
+ * fetch fails the app carries on with the browser's own leads – a connection
+ * problem should not leave someone staring at an empty screen.
+ */
+async function start() {
+  if (usingAirtable()) {
+    await loadFromAirtable();
+  }
+  startRouter(render);
+  renderSyncStatus();
+}
+
+start();

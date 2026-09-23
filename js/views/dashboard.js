@@ -318,9 +318,12 @@ export function renderDashboard() {
             : 'הדפדפן חוסם שמירה מקומית, ולכן שינויים ייעלמו ברענון. בחלון פרטי זה מצב רגיל.'
         }
       </p>
-      <button class="btn btn-secondary" type="button" data-action="ask-reset">
-        איפוס נתוני ההדגמה
-      </button>
+      <div class="export-buttons">
+        <button class="btn btn-secondary" type="button" data-action="ask-reset">
+          איפוס נתוני ההדגמה
+        </button>
+        <a class="btn btn-secondary" href="#/settings">הגדרות ומקור נתונים</a>
+      </div>
       <div class="delete-confirm" data-role="reset-confirm" hidden>
         <p class="delete-question">
           לאפס את כל הנתונים? כל הלידים שהוספת או ערכת יימחקו, והנתונים הבדיוניים יחזרו למצבם ההתחלתי.
