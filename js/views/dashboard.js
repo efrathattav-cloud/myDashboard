@@ -3,18 +3,23 @@
 // Order on the screen follows the SPEC: the business picture first, follow-up
 // second. Everything shown here is calculated in leads.js, never inline.
 
-import { currentMonth, formatMonth, previousMonth, today } from '../dates.js';
+import { currentMonth, formatMonth, formatShortDate, previousMonth, today } from '../dates.js';
 import { icons } from '../icons.js';
 import { escapeHtml } from '../html.js';
 import {
+  activeBreakdown,
   attentionSummary,
+  isOverdue,
+  clientsWonInMonth,
   createdInMonth,
   hotLeads,
+  mostUrgent,
   recentLeads,
   revenueInMonth,
+  sourcesByClients,
   wonLeads,
 } from '../leads.js';
-import { formatCurrency } from '../model.js';
+import { NEXT_ACTIONS, SOURCES, formatCurrency, labelOf } from '../model.js';
 import {
   downloadCsv,
   exportFilename,
@@ -42,19 +47,37 @@ function kpiCard(label, value, comparison = '') {
 
 /**
  * Describes a change against the previous month in words.
+ *
  * Written out rather than shown as a coloured arrow, so it reads the same
- * without colour (SPEC section 21).
+ * without colour (SPEC section 21). It never repeats the figure printed above
+ * it – the card already says that.
  *
  * @param {number} current
  * @param {number} previous
- * @param {string} unit What is being counted, e.g. 'לידים'.
  */
-function comparisonText(current, previous, unit) {
+function comparisonText(current, previous) {
   const difference = current - previous;
   if (previous === 0 && current === 0) return 'גם בחודש שעבר לא היו';
   if (difference === 0) return `כמו בחודש שעבר (${previous})`;
-  if (difference > 0) return `${difference}+ ${unit} לעומת החודש שעבר`;
-  return `${Math.abs(difference)}− ${unit} לעומת החודש שעבר`;
+  if (difference > 0) return `${difference}+ לעומת החודש שעבר`;
+  return `${Math.abs(difference)}− לעומת החודש שעבר`;
+}
+
+/**
+ * The line under "clients closed".
+ *
+ * The number on that card counts every client ever, so the line below has to
+ * say plainly that its own number is about this month – otherwise the two
+ * read as the same figure twice, which is exactly what they are not.
+ *
+ * @param {number} thisMonth
+ * @param {number} lastMonth
+ */
+function clientsThisMonthText(thisMonth, lastMonth) {
+  if (thisMonth === 0) return 'אף לקוחה לא נסגרה החודש';
+  const closed = `${thisMonth} ${thisMonth === 1 ? 'נסגרה' : 'נסגרו'} החודש`;
+  if (lastMonth === 0) return `${closed} · אף אחת בחודש שעבר`;
+  return `${closed} · ${lastMonth} בחודש שעבר`;
 }
 
 /**
@@ -77,6 +100,35 @@ function alertRow(count, text, href, variant) {
 }
 
 /**
+ * One lead that needs getting back to, named, with the action waiting and a
+ * way to deal with it.
+ *
+ * The counts above answer "how many". This answers "who" – which is the
+ * second of the three questions the whole app exists for (SPEC section 25),
+ * and it used to take a tap to find out.
+ *
+ * @param {import('../model.js').Lead} lead
+ * @param {string} now
+ */
+function urgentRow(lead, now) {
+  const action = labelOf(NEXT_ACTIONS, lead.nextAction, lead.customNextAction);
+  const late = isOverdue(lead, now);
+  const href = `#/leads/${encodeURIComponent(lead.id)}`;
+
+  return `
+    <li class="urgent-row">
+      <span class="urgent-when urgent-when-${late ? 'overdue' : 'today'}">
+        ${escapeHtml(late ? `באיחור · ${formatShortDate(lead.nextActionDate)}` : 'להיום')}
+      </span>
+      <a class="urgent-name" href="${href}">${escapeHtml(lead.name)}</a>
+      <span class="urgent-action">${escapeHtml(action)}</span>
+      <a class="btn btn-secondary urgent-done" href="${href}?panel=done">
+        בוצע<span class="visually-hidden"> – ${escapeHtml(action)} עבור ${escapeHtml(lead.name)}</span>
+      </a>
+    </li>`;
+}
+
+/**
  * The "needs attention" section (SPEC section 6.3).
  *
  * @param {import('../model.js').Lead[]} leads
@@ -84,6 +136,8 @@ function alertRow(count, text, href, variant) {
  */
 function attentionSection(leads, now) {
   const { overdue, dueToday, stale } = attentionSummary(leads, now);
+  const urgent = mostUrgent(leads, 3, now);
+  const waiting = overdue + dueToday;
 
   if (overdue + dueToday + stale === 0) {
     return `
@@ -101,6 +155,62 @@ function attentionSection(leads, now) {
         ${alertRow(dueToday, dueToday === 1 ? 'פעולת מעקב להיום' : 'פעולות מעקב להיום', '#/tasks', 'today')}
         ${alertRow(stale, stale === 1 ? 'לידה שלא קיבלה מענה מעל 5 ימים' : 'לידים שלא קיבלו מענה מעל 5 ימים', '#/leads?followup=stale', 'warning')}
       </div>
+
+      ${
+        urgent.length
+          ? `<ul class="urgent-list">
+               ${urgent.map((lead) => urgentRow(lead, now)).join('')}
+             </ul>
+             ${
+               waiting > urgent.length
+                 ? `<p class="urgent-more">
+                      <a class="section-link" href="#/tasks">ועוד ${waiting - urgent.length} במסך המשימות</a>
+                    </p>`
+                 : ''
+             }`
+          : ''
+      }
+    </section>`;
+}
+
+/**
+ * Where the paying clients actually come from (SPEC section 25, question 3).
+ *
+ * A source that brings many enquiries is not the same as one that brings
+ * clients, so each line says both: how many clients, out of how many leads.
+ * Sources that brought nobody are left out – this list is about what works.
+ *
+ * @param {import('../model.js').Lead[]} leads
+ */
+function sourcesSection(leads) {
+  const sources = sourcesByClients(leads).slice(0, 3);
+
+  if (sources.length === 0) {
+    return `
+      <section class="dashboard-section" aria-labelledby="sources-heading">
+        <h2 class="section-title" id="sources-heading">מאיפה מגיעות הלקוחות</h2>
+        <p class="card empty-state">עדיין לא נסגרו לקוחות, אז אין מה להשוות.</p>
+      </section>`;
+  }
+
+  return `
+    <section class="dashboard-section" aria-labelledby="sources-heading">
+      <div class="section-header">
+        <h2 class="section-title" id="sources-heading">מאיפה מגיעות הלקוחות</h2>
+        <a class="section-link" href="#/analytics?period=all">לכל הנתונים</a>
+      </div>
+      <ul class="source-list card">
+        ${sources
+          .map(
+            (entry) => `
+              <li class="source-row">
+                <span class="source-name">${escapeHtml(labelOf(SOURCES, entry.source))}</span>
+                <span class="source-clients">${entry.clients} ${entry.clients === 1 ? 'לקוחה' : 'לקוחות'}</span>
+                <span class="source-rate">${entry.clients} מתוך ${entry.leads} ${entry.leads === 1 ? 'ליד' : 'לידים'} · ${entry.rate}%</span>
+              </li>`
+          )
+          .join('')}
+      </ul>
     </section>`;
 }
 
@@ -145,6 +255,12 @@ export function renderDashboard() {
 
   const newThisMonth = createdInMonth(leads, thisMonth).length;
   const newLastMonth = createdInMonth(leads, lastMonth).length;
+  const { active, closed } = activeBreakdown(leads);
+  const hot = hotLeads(leads);
+  const hotActive = hot.filter((lead) => lead.status !== 'won' && lead.status !== 'lost').length;
+  const clients = wonLeads(leads);
+  const clientsThisMonth = clientsWonInMonth(leads, thisMonth).length;
+  const clientsLastMonth = clientsWonInMonth(leads, lastMonth).length;
   const revenueThisMonth = revenueInMonth(leads, thisMonth);
   const revenueLastMonth = revenueInMonth(leads, lastMonth);
 
@@ -160,10 +276,10 @@ export function renderDashboard() {
     </header>
 
     <section class="kpi-grid" aria-label="מדדים מרכזיים">
-      ${kpiCard('סה״כ לידים', leads.length)}
-      ${kpiCard('לידים חדשים החודש', newThisMonth, comparisonText(newThisMonth, newLastMonth, 'לידים'))}
-      ${kpiCard('לידים חמים', hotLeads(leads).length)}
-      ${kpiCard('לקוחות שנסגרו', wonLeads(leads).length)}
+      ${kpiCard('סה״כ לידים', leads.length, `${active} עדיין פתוחים · ${closed} סגורים`)}
+      ${kpiCard('לידים חדשים החודש', newThisMonth, comparisonText(newThisMonth, newLastMonth))}
+      ${kpiCard('לידים חמים', hot.length, hotActive === hot.length ? `מתוך ${active} לידים פתוחים` : `${hotActive} מהם עדיין פתוחים`)}
+      ${kpiCard('לקוחות שנסגרו', clients.length, clientsThisMonthText(clientsThisMonth, clientsLastMonth))}
     </section>
 
     <section class="card revenue-card" aria-labelledby="revenue-heading">
@@ -173,6 +289,7 @@ export function renderDashboard() {
     </section>
 
     ${attentionSection(leads, now)}
+    ${sourcesSection(leads)}
     ${recentSection(leads, now)}
 
     <section class="demo-zone" aria-labelledby="export-heading">

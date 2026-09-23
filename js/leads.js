@@ -315,3 +315,65 @@ export function tasksByUrgency(leads, now = today()) {
     upcoming: pending.filter((lead) => lead.nextActionDate > now).sort(byDate),
   };
 }
+
+/**
+ * The leads that most need getting back to, most pressing first.
+ *
+ * Order: the longest overdue, then what is due today. Leads with nothing
+ * pending are left out entirely – they may be stale, but there is no action
+ * waiting, so there is nothing to tick off.
+ *
+ * @param {import('./model.js').Lead[]} leads
+ * @param {number} [limit]
+ * @param {string} [now]
+ * @returns {import('./model.js').Lead[]}
+ */
+export function mostUrgent(leads, limit = 3, now = today()) {
+  const { overdue, today: dueToday } = tasksByUrgency(leads, now);
+  return [...overdue, ...dueToday].slice(0, limit);
+}
+
+/**
+ * How many leads are still in play, and how many are finished.
+ * Used to say what the headline count is actually made of.
+ *
+ * @param {import('./model.js').Lead[]} leads
+ */
+export function activeBreakdown(leads) {
+  const active = leads.filter(isActive).length;
+  return { active, closed: leads.length - active };
+}
+
+/**
+ * Clients won inside a given month.
+ *
+ * @param {import('./model.js').Lead[]} leads
+ * @param {string} month 'YYYY-MM'.
+ */
+export function clientsWonInMonth(leads, month) {
+  return wonLeads(leads).filter((lead) => monthOf(lead.sale.closedAt) === month);
+}
+
+/**
+ * Which sources actually produced paying clients, best first.
+ * Sources that brought nobody are left out: the point of this list is where
+ * the clients come from, not where they do not.
+ *
+ * @param {import('./model.js').Lead[]} leads
+ * @returns {Array<{source: string, clients: number, leads: number, rate: number}>}
+ */
+export function sourcesByClients(leads) {
+  const bySource = new Map();
+
+  for (const lead of leads) {
+    const entry = bySource.get(lead.source) ?? { source: lead.source, clients: 0, leads: 0 };
+    entry.leads += 1;
+    if (lead.status === 'won') entry.clients += 1;
+    bySource.set(lead.source, entry);
+  }
+
+  return [...bySource.values()]
+    .filter((entry) => entry.clients > 0)
+    .map((entry) => ({ ...entry, rate: Math.round((entry.clients / entry.leads) * 100) }))
+    .sort((a, b) => b.clients - a.clients || b.rate - a.rate);
+}

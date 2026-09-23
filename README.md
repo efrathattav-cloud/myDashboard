@@ -29,8 +29,9 @@ Done:
 
 ## Features
 
-- **Dashboard** – four KPIs, revenue for the current month, a "needs attention"
-  section, and the most recent leads.
+- **Dashboard** – four KPIs each with a line of context, revenue for the
+  current month, the leads waiting on you *by name* with a "done" button,
+  where the paying clients come from, and the most recent leads.
 - **Leads** – search by name, phone or notes, and five filters that combine.
   The search and filters live in the address bar, so a filtered view survives a
   refresh and can be linked to.
