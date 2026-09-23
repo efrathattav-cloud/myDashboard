@@ -273,10 +273,36 @@ a {
 /* ---------- Layout: desktop ---------- */
 
 @media (min-width: 900px) {
+  /*
+   * Named areas rather than letting the grid place things itself.
+   *
+   * With automatic placement, a third visible child - the sync line - took the
+   * content's slot and pushed the whole screen into the next row, underneath a
+   * sidebar that is a full viewport tall. The page was still there; it was
+   * simply below the fold and as narrow as the sidebar. Naming the areas makes
+   * that impossible: the sidebar spans both rows, the sync line sits above the
+   * content, and the content stays put whether that line is showing or not.
+   */
   .app-shell {
     display: grid;
     grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "sidebar sync"
+      "sidebar main";
     min-height: 100vh;
+  }
+
+  .sidebar {
+    grid-area: sidebar;
+  }
+
+  .sync-status {
+    grid-area: sync;
+  }
+
+  .main {
+    grid-area: main;
   }
 
   .topbar,
