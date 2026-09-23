@@ -7,7 +7,7 @@
 // conversion rate compared two different groups of people.
 
 import { startOfMonth, startOfWeek } from './dates.js';
-import { PRODUCTS, SOURCES } from './model.js';
+import { LOST_REASONS, PRODUCTS, SOURCES } from './model.js';
 
 /** The periods offered at the top of the screen (SPEC section 13.1). */
 export const PERIODS = {
@@ -159,4 +159,55 @@ export function funnelStages(leads) {
     { key: 'offer', label: 'קיבלו הצעה / בהתלבטות', value: leads.filter(reachedOffer).length },
     { key: 'clients', label: 'הפכו ללקוחות', value: leads.filter((lead) => lead.status === 'won').length },
   ];
+}
+
+/**
+ * Why leads did not become clients (SPEC section 11).
+ *
+ * The SPEC records the reason "so that analytics on reasons for not closing
+ * can be shown" – this is that. It is the one chart that says what to change
+ * rather than what happened: a pile of "price too high" is a pricing
+ * conversation, a pile of "didn't get back to me" is a follow-up one.
+ *
+ * Only reasons that actually occurred are returned. Listing every possible
+ * reason at zero would bury the two that matter under five that never happen.
+ *
+ * Free text written under "other" is carried along, because "other" on its
+ * own says nothing at all.
+ *
+ * @param {import('./model.js').Lead[]} leads
+ * @returns {Array<{key: string, label: string, value: number, details: string[]}>}
+ */
+export function countByLostReason(leads) {
+  const lost = leads.filter((lead) => lead.status === 'lost' && lead.lostReason);
+
+  return Object.entries(LOST_REASONS)
+    .map(([key, label]) => {
+      const matching = lost.filter((lead) => lead.lostReason === key);
+      return {
+        key,
+        label,
+        value: matching.length,
+        details:
+          key === 'other'
+            ? matching.map((lead) => lead.customLostReason).filter(Boolean)
+            : [],
+      };
+    })
+    .filter((row) => row.value > 0)
+    .sort((a, b) => b.value - a.value);
+}
+
+/**
+ * How many leads in this set did not close, and what share that is.
+ *
+ * @param {import('./model.js').Lead[]} leads
+ */
+export function lostSummary(leads) {
+  const lost = leads.filter((lead) => lead.status === 'lost').length;
+  return {
+    lost,
+    total: leads.length,
+    share: leads.length === 0 ? 0 : Math.round((lost / leads.length) * 100),
+  };
 }

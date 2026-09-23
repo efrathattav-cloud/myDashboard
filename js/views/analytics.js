@@ -10,10 +10,12 @@
 import {
   PERIODS,
   clientsBySource,
+  countByLostReason,
   countByProduct,
   countBySource,
   funnelStages,
   leadsInPeriod,
+  lostSummary,
   revenueBySource,
 } from '../analytics.js';
 import { escapeHtml } from '../html.js';
@@ -50,6 +52,39 @@ function periodFilter(active) {
     <nav class="period-filter" aria-label="תקופה">
       ${buttons}
     </nav>`;
+}
+
+/**
+ * Why leads did not close (SPEC section 11).
+ *
+ * The one chart here that points at something to change rather than
+ * describing what happened. Free text written under "other" is printed
+ * beneath the bar, because "other: 1" tells nobody anything.
+ *
+ * @param {import('../model.js').Lead[]} leads
+ */
+function lostReasonsSection(leads) {
+  const { lost, total, share } = lostSummary(leads);
+
+  if (lost === 0) {
+    return `
+      <section class="card chart-card" aria-labelledby="lost-reasons-heading">
+        <h2 class="section-title" id="lost-reasons-heading">למה לידים לא נסגרו</h2>
+        <p class="empty-state">אף ליד לא סומן כ"לא נסגרה" בתקופה שנבחרה.</p>
+      </section>`;
+  }
+
+  const rows = countByLostReason(leads).map((row) => ({
+    ...row,
+    note: row.details.length ? row.details.join(' · ') : undefined,
+  }));
+
+  return barChart({
+    id: 'lost-reasons',
+    title: 'למה לידים לא נסגרו',
+    rows,
+    hint: `${lost} מתוך ${total} ${total === 1 ? 'ליד' : 'לידים'} לא נסגרו (${share}%). הסיבה השכיחה היא המקום להתחיל בו.`,
+  });
 }
 
 /** @returns {string} */
@@ -91,8 +126,10 @@ export function renderAnalytics() {
       id: 'funnel',
       title: 'משפך המכירה',
       rows: funnelStages(leads),
-      hint: 'כמה לידים הגיעו לכל שלב בדרך ללקוחה.',
+      hint: 'כמה לידים הגיעו לכל שלב. המערכת שומרת רק את הסטטוס הנוכחי, ולכן ליד שקיבלה הצעה ולא סגרה נספרת לפי ההצעה שקיבלה.',
     })}
+
+    ${lostReasonsSection(leads)}
 
     ${barChart({
       id: 'by-source',

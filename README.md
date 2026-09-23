@@ -41,8 +41,9 @@ Done:
   record an interaction, mark the pending action done, change the status.
 - **Tasks** – overdue, today and upcoming, each group collapsible, each task
   with a "done" action.
-- **Analytics** – conversion rate, sales funnel, leads and clients by source,
-  revenue by source, interest by product, over four periods.
+- **Analytics** – conversion rate, sales funnel, why leads did not close,
+  leads and clients by source, revenue by source, interest by product, over
+  four periods.
 - Changes are saved in the browser, and can be reset to the demo data.
 - **CSV export** – two files, ready to import into Airtable or a spreadsheet.
 
