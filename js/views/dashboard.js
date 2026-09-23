@@ -15,6 +15,12 @@ import {
   wonLeads,
 } from '../leads.js';
 import { formatCurrency } from '../model.js';
+import {
+  downloadCsv,
+  exportFilename,
+  interactionsToCsv,
+  leadsToCsv,
+} from '../export.js';
 import { getLeads, isPersistent, resetDemoData } from '../store.js';
 import { renderLeadCard } from './lead-card.js';
 
@@ -169,6 +175,23 @@ export function renderDashboard() {
     ${attentionSection(leads, now)}
     ${recentSection(leads, now)}
 
+    <section class="demo-zone" aria-labelledby="export-heading">
+      <h2 class="section-title" id="export-heading">ייצוא הנתונים</h2>
+      <p class="field-hint">
+        קובצי CSV לייבוא לאיירטייבל, לגיליון אלקטרוני או לכל כלי אחר.
+        שני קבצים, כי לכל ליד יש כמה שיחות ושורה אחת לא יכולה להכיל את כולן.
+        הקבצים נוצרים במחשב שלך ולא נשלחים לשום מקום.
+      </p>
+      <div class="export-buttons">
+        <button class="btn btn-secondary" type="button" data-action="export-leads">
+          הורדת הלידים (${leads.length})
+        </button>
+        <button class="btn btn-secondary" type="button" data-action="export-interactions">
+          הורדת האינטראקציות (${leads.reduce((sum, lead) => sum + lead.interactions.length, 0)})
+        </button>
+      </div>
+    </section>
+
     <section class="demo-zone" aria-labelledby="demo-heading">
       <h2 class="section-title" id="demo-heading">נתוני הדגמה</h2>
       <p class="field-hint">
@@ -202,7 +225,13 @@ export function mountDashboard(screen) {
 
   screen.addEventListener('click', (event) => {
     const action = event.target.closest('[data-action]')?.dataset.action;
-    if (action === 'ask-reset') {
+    if (action === 'export-leads') {
+      const leads = getLeads();
+      downloadCsv(exportFilename('leads', today()), leadsToCsv(leads));
+    } else if (action === 'export-interactions') {
+      const leads = getLeads();
+      downloadCsv(exportFilename('interactions', today()), interactionsToCsv(leads));
+    } else if (action === 'ask-reset') {
       confirmBox.hidden = false;
       confirmBox.querySelector('[data-action="confirm-reset"]').focus();
     } else if (action === 'cancel-reset') {

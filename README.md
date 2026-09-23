@@ -42,6 +42,35 @@ Done:
 - **Analytics** – conversion rate, sales funnel, leads and clients by source,
   revenue by source, interest by product, over four periods.
 - Changes are saved in the browser, and can be reset to the demo data.
+- **CSV export** – two files, ready to import into Airtable or a spreadsheet.
+
+## Exporting to Airtable
+
+At the bottom of the Dashboard, **ייצוא הנתונים** downloads two files:
+
+| File | One row per | Key columns |
+|---|---|---|
+| `leadflow-leads-<date>.csv` | lead | everything about her, plus `מזהה` (her id) |
+| `leadflow-interactions-<date>.csv` | conversation | `ליד` (her name), `מזהה הליד` (her id) |
+
+Two files rather than one, because a lead has many conversations and a single
+row cannot hold them. That is also how the data wants to be modelled in
+Airtable: a table of leads, a table of interactions, and a link between them.
+
+To import:
+
+1. In Airtable, **Add a table → Import data → CSV file**, and upload the leads
+   file. Airtable creates a field per column.
+2. Set **מתעניינת ב** to *Multiple select*. The values are comma-separated, so
+   Airtable splits them into separate options.
+3. Set the date columns to *Date* and the price columns to *Number*.
+4. Import the interactions file the same way, into a second table.
+5. In the interactions table, change **ליד** to *Link to another record* and
+   point it at the leads table. Airtable matches on the lead's name.
+
+Both files are UTF-8 with a byte order mark, so Hebrew opens correctly in
+Excel as well as in Airtable and Google Sheets. The files are built in the
+browser and never leave the computer.
 
 ## Technologies
 
