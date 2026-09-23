@@ -38,7 +38,8 @@ Done:
   conditional sections for a sale or a reason a lead did not close.
 - **Lead card** – every detail, the conversation history, and quick actions:
   record an interaction, mark the pending action done, change the status.
-- **Tasks** – overdue, today and upcoming, each with a "done" action.
+- **Tasks** – overdue, today and upcoming, each group collapsible, each task
+  with a "done" action.
 - **Analytics** – conversion rate, sales funnel, leads and clients by source,
   revenue by source, interest by product, over four periods.
 - Changes are saved in the browser, and can be reset to the demo data.

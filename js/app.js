@@ -6,7 +6,7 @@ import { mountLeadForm, renderLeadForm } from './views/lead-form.js';
 import { mountLeads, renderLeads } from './views/leads.js';
 import { renderAnalytics } from './views/analytics.js';
 import { renderNotFound } from './views/not-found.js';
-import { renderTasks } from './views/tasks.js';
+import { mountTasks, renderTasks } from './views/tasks.js';
 
 /**
  * @typedef {Object} Route
@@ -37,7 +37,7 @@ const ROUTES = [
   { path: '/leads/new', title: 'ליד חדש', render: renderLeadForm, mount: mountLeadForm, navSection: '/leads', hideFab: true },
   { path: '/leads/:id/edit', title: 'עריכת ליד', render: renderLeadForm, mount: mountLeadForm, navSection: '/leads', hideFab: true },
   { path: '/leads/:id', title: 'כרטיס ליד', render: renderLeadDetail, mount: mountLeadDetail, navSection: '/leads', hideFab: true },
-  { path: '/tasks', title: 'משימות', render: renderTasks, navSection: '/tasks' },
+  { path: '/tasks', title: 'משימות', render: renderTasks, mount: mountTasks, navSection: '/tasks' },
   { path: '/analytics', title: 'אנליטיקס', render: renderAnalytics, navSection: '/analytics' },
 ];
 

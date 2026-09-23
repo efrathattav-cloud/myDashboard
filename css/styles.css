@@ -714,15 +714,20 @@ select.field-input {
   margin-bottom: var(--space-4);
 }
 
-.filter-panel {
+/*
+ * A section that folds away. Used by the filters on the Leads screen and by
+ * each group on the Tasks screen, so the two behave and look the same.
+ */
+.collapse-panel {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
 }
 
-.filter-summary {
+.collapse-summary {
   display: flex;
   align-items: center;
+  gap: var(--space-2);
   min-height: 44px;
   padding: 0 var(--space-3);
   font-size: 0.9375rem;
@@ -732,8 +737,13 @@ select.field-input {
   list-style: none;
 }
 
-.filter-summary::-webkit-details-marker {
+.collapse-summary::-webkit-details-marker {
   display: none;
+}
+
+.collapse-summary:hover {
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
 }
 
 /*
@@ -741,8 +751,9 @@ select.field-input {
  * chevron. The shape is symmetrical, so it reads the same in both directions
  * and the physical border sides here are deliberate.
  */
-.filter-summary::after {
+.collapse-summary::after {
   content: '';
+  flex: none;
   width: 8px;
   height: 8px;
   margin-inline-start: auto;
@@ -751,7 +762,7 @@ select.field-input {
   transform: rotate(45deg);
 }
 
-.filter-panel[open] .filter-summary::after {
+.collapse-panel[open] > .collapse-summary::after {
   transform: rotate(-135deg);
 }
 
@@ -1291,8 +1302,13 @@ select.field-input {
 }
 
 @media (min-width: 900px) {
+  /*
+   * 280px rather than 320: a task list now sits inside a collapsible group,
+   * which takes its own padding off the width. At 320 the second column was
+   * twenty pixels short of fitting and every task sat on its own row.
+   */
   .task-list {
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 
   .task-actions .btn {
@@ -1509,4 +1525,77 @@ select.field-input {
   .export-buttons .btn {
     min-width: 220px;
   }
+}
+
+/* ---------- Tasks: collapsible groups ---------- */
+
+.task-groups {
+  display: grid;
+  gap: var(--space-3);
+}
+
+/* The heading sits inside the summary, so it carries no margin of its own. */
+.task-group-title {
+  margin: 0;
+  font-size: 1.0625rem;
+}
+
+/*
+ * The count stays visible when the group is folded, so a closed group still
+ * says how much is inside it.
+ */
+.task-group-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 26px;
+  height: 24px;
+  padding: 0 var(--space-1);
+  border-radius: 999px;
+  background: var(--color-bg);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.task-group-body {
+  padding: 0 var(--space-3) var(--space-3);
+}
+
+/* A group's colour is repeated on its edge, as on the cards inside it. */
+.task-group[data-group="overdue"] {
+  border-inline-start: 4px solid var(--color-danger);
+}
+
+.task-group[data-group="overdue"] .task-group-count {
+  background: #fdecea;
+  color: var(--color-danger);
+}
+
+.task-group[data-group="today"] {
+  border-inline-start: 4px solid var(--color-primary);
+}
+
+.task-group[data-group="today"] .task-group-count {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-hover);
+}
+
+.task-group[data-group="upcoming"] {
+  border-inline-start: 4px solid var(--color-success);
+}
+
+.task-group[data-group="upcoming"] .task-group-count {
+  background: #e6f4ec;
+  color: var(--color-success);
+}
+
+/* Inside a group the cards sit on the page, so they drop their own edge. */
+.task-group-body .task-card {
+  border-inline-start-width: 1px;
+  border-inline-start-color: var(--color-border);
+}
+
+.task-group-body .empty-state {
+  margin: 0;
+  padding: var(--space-4) var(--space-3);
 }

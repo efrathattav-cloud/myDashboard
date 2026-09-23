@@ -4,6 +4,10 @@
 // Three groups, most urgent first: what is late, what is due today, what is
 // coming. Each task names the lead, what to do, when, and how she is doing.
 //
+// Each group folds away, so a long "upcoming" list does not bury what is late.
+// Whether a group is open is remembered between visits: collapsing something
+// only to find it open again on the next visit is worse than not collapsing.
+//
 // "Done" does not just tick a box. SPEC section 12 says it should also let you
 // record what happened and decide what comes next – which is exactly the panel
 // already built into the lead card. So the button opens that panel instead of
@@ -19,6 +23,38 @@ import {
   labelOf,
 } from '../model.js';
 import { getLeads } from '../store.js';
+
+/**
+ * Which groups are open. Stored per browser, like everything else here.
+ *
+ * The defaults follow urgency: what is late and what is due today are open,
+ * what is merely coming is folded away.
+ */
+const OPEN_STATE_KEY = 'leadflow.tasks.open.v1';
+const DEFAULT_OPEN = { overdue: true, today: true, upcoming: false };
+
+/** @returns {Record<string, boolean>} */
+function readOpenState() {
+  try {
+    const raw = window.localStorage.getItem(OPEN_STATE_KEY);
+    if (!raw) return { ...DEFAULT_OPEN };
+    // Spread the defaults first, so a stored value missing a group still works.
+    return { ...DEFAULT_OPEN, ...JSON.parse(raw) };
+  } catch {
+    // A private window, or text that is not the JSON we wrote. The defaults
+    // are perfectly good; nothing here is worth interrupting the user for.
+    return { ...DEFAULT_OPEN };
+  }
+}
+
+/** @param {Record<string, boolean>} state */
+function writeOpenState(state) {
+  try {
+    window.localStorage.setItem(OPEN_STATE_KEY, JSON.stringify(state));
+  } catch {
+    // Not being able to remember a folded section is not worth reporting.
+  }
+}
 
 /**
  * One task.
@@ -78,20 +114,23 @@ function taskCard(lead, group, now) {
  * @param {string} [options.emptyText] When given, the group is shown even when
  *   it is empty, with this message. Otherwise an empty group is left out.
  */
-function taskSection({ id, title, leads, group, now, emptyText }) {
+function taskSection({ id, title, leads, group, now, emptyText, open }) {
   if (leads.length === 0 && !emptyText) return '';
 
   const body = leads.length
     ? `<div class="task-list">${leads.map((lead) => taskCard(lead, group, now)).join('')}</div>`
-    : `<p class="card empty-state">${escapeHtml(emptyText)}</p>`;
+    : `<p class="empty-state">${escapeHtml(emptyText)}</p>`;
 
+  // The heading lives inside the summary so that the thing you click to fold
+  // the group is the same thing that names it.
   return `
-    <section class="dashboard-section" aria-labelledby="${id}-heading">
-      <h2 class="section-title" id="${id}-heading">
-        ${escapeHtml(title)}${leads.length ? ` (${leads.length})` : ''}
-      </h2>
-      ${body}
-    </section>`;
+    <details class="collapse-panel task-group" data-group="${escapeHtml(group)}"${open ? ' open' : ''}>
+      <summary class="collapse-summary">
+        <h2 class="task-group-title" id="${id}-heading">${escapeHtml(title)}</h2>
+        <span class="task-group-count">${leads.length}</span>
+      </summary>
+      <div class="task-group-body">${body}</div>
+    </details>`;
 }
 
 /** @returns {string} */
@@ -99,6 +138,7 @@ export function renderTasks() {
   const now = today();
   const { overdue, today: dueToday, upcoming } = tasksByUrgency(getLeads(), now);
   const total = overdue.length + dueToday.length + upcoming.length;
+  const openState = readOpenState();
 
   if (total === 0) {
     return `
@@ -120,15 +160,31 @@ export function renderTasks() {
       </p>
     </header>
 
-    ${taskSection({ id: 'overdue', title: 'באיחור', leads: overdue, group: 'overdue', now })}
-    ${taskSection({
-      id: 'today',
-      title: 'להיום',
-      leads: dueToday,
-      group: 'today',
-      now,
-      emptyText: 'הכל מעודכן 🎉 אין פעולות מעקב להיום.',
-    })}
-    ${taskSection({ id: 'upcoming', title: 'בקרוב', leads: upcoming, group: 'upcoming', now })}
+    <div class="task-groups">
+      ${taskSection({ id: 'overdue', title: 'באיחור', leads: overdue, group: 'overdue', now, open: openState.overdue })}
+      ${taskSection({
+        id: 'today',
+        title: 'להיום',
+        leads: dueToday,
+        group: 'today',
+        now,
+        emptyText: 'הכל מעודכן 🎉 אין פעולות מעקב להיום.',
+        open: openState.today,
+      })}
+      ${taskSection({ id: 'upcoming', title: 'בקרוב', leads: upcoming, group: 'upcoming', now, open: openState.upcoming })}
+    </div>
   `;
+}
+
+/**
+ * @param {HTMLElement} screen The element holding this screen's HTML.
+ */
+export function mountTasks(screen) {
+  // The toggle event does not bubble, so each group is listened to directly
+  // rather than through one listener on the screen.
+  for (const group of screen.querySelectorAll('.task-group')) {
+    group.addEventListener('toggle', () => {
+      writeOpenState({ ...readOpenState(), [group.dataset.group]: group.open });
+    });
+  }
 }

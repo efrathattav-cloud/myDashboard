@@ -160,8 +160,8 @@ export function renderLeads() {
         >
       </p>
 
-      <details class="filter-panel"${active ? ' open' : ''}>
-        <summary class="filter-summary">
+      <details class="collapse-panel filter-panel"${active ? ' open' : ''}>
+        <summary class="collapse-summary">
           סינון${active ? ` (${active})` : ''}
         </summary>
         <div class="filter-fields">
