@@ -44,9 +44,59 @@ Done:
 - **Analytics** – conversion rate, sales funnel, why leads did not close,
   leads and clients by source, revenue by source, interest by product, over
   four periods.
+- **Marketing calendar** – Jewish holidays, Shabbat times and the weeks a
+  campaign can actually run in, from a live calendar API.
 - Changes are saved in the browser, and can be reset to the demo data.
 - **Optional Airtable backend** – keep the leads in an Airtable table instead.
 - **CSV export** – two files, ready to import into Airtable or a spreadsheet.
+
+## The marketing calendar (Hebcal API)
+
+**Why this API.** A campaign or a new round that opens on Chol HaMoed, or a
+reminder that lands on Shabbat, is wasted. Planning around that means knowing
+the Jewish calendar, and knowing it for Israel rather than the diaspora.
+[Hebcal](https://www.hebcal.com/home/developer-apis) answers both, is free,
+needs no key or account, and allows browser requests — which suits an app with
+no server of its own.
+
+**Two endpoints**
+
+| | |
+|---|---|
+| `GET /hebcal` | Holidays and observances between two dates |
+| `GET /shabbat` | Candle lighting and havdalah for the coming Shabbat |
+
+```
+https://www.hebcal.com/hebcal?v=1&cfg=json&maj=on&min=on&mod=on&i=on&lg=he&start=…&end=…
+https://www.hebcal.com/shabbat?cfg=json&geonameid=295620&M=on&lg=he
+```
+
+The parameters that matter: `i=on` is the Israeli calendar, not the diaspora
+one; `lg=he` is Hebrew; `M=on` sets havdalah by nightfall; `geonameid=295620`
+is Ashkelon. The dates are worked out from today, three months ahead.
+
+**What the screen does with it.** Holidays are listed with what each one means
+for the business — a day of rest, a festival, or an observance that is a normal
+working day. Only the major ones rule a week out, so "free windows" are whole
+Sunday-to-Saturday weeks with no festival in them, which is when a campaign can
+start.
+
+**Where the code lives**
+
+| File | Job |
+|---|---|
+| `js/hebcal.js` | The only file that knows Hebcal exists: fetch, check, return the app's own shapes. No HTML. |
+| `js/calendar.js` | Pure date arithmetic: which weeks are free, grouping a festival's days into one entry. No network. |
+| `js/views/marketing-calendar.js` | The screen. Draws a frame, then fills it in. |
+
+That split is the pattern to reuse for the next API: one file per service,
+returning the app's own shapes, so the screen never deals with HTTP and the
+network code never builds HTML.
+
+**When it fails.** The two calls are made together, and one failing does not
+discard the other — losing the Shabbat times still leaves the holidays. A
+friendly message and a retry button appear in place of whatever did not load,
+and nothing else in the app is affected.
 
 ## Using Airtable as the database
 
@@ -174,6 +224,8 @@ js/leads.js       Business rules: overdue, stale, revenue, conversion rate, filt
 js/validation.js  Form validation rules
 js/store.js       Holds the app's leads; saves to the browser and to Airtable
 js/airtable.js    Airtable API client and the mapping to and from a lead
+js/hebcal.js      Hebcal API client (holidays, Shabbat times)
+js/calendar.js    Free campaign windows, grouping a festival's days
 js/settings.js    Where the leads live, and the token (browser only)
 js/dates.js       Date helpers ('YYYY-MM-DD' strings)
 js/demo-data.js   16 fictional demo leads

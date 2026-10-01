@@ -6,6 +6,7 @@ import { mountDashboard, renderDashboard } from './views/dashboard.js';
 import { mountLeadDetail, renderLeadDetail } from './views/lead-detail.js';
 import { mountLeadForm, renderLeadForm } from './views/lead-form.js';
 import { mountLeads, renderLeads } from './views/leads.js';
+import { mountMarketingCalendar, renderMarketingCalendar } from './views/marketing-calendar.js';
 import { renderAnalytics } from './views/analytics.js';
 import { renderNotFound } from './views/not-found.js';
 import { mountSettings, renderSettings } from './views/settings.js';
@@ -30,6 +31,9 @@ const NAV_ITEMS = [
   { path: '/leads', label: 'לידים', icon: icons.leads },
   { path: '/tasks', label: 'משימות', icon: icons.tasks },
   { path: '/analytics', label: 'אנליטיקס', icon: icons.analytics },
+  // The bottom bar on a phone holds four (SPEC section 5), so this one lives
+  // in the desktop sidebar and is reached from the Dashboard on a phone.
+  { path: '/calendar', label: 'לוח שיווק', icon: icons.calendar, desktopOnly: true },
 ];
 
 /** @type {Route[]} */
@@ -42,20 +46,22 @@ const ROUTES = [
   { path: '/leads/:id', title: 'כרטיס ליד', render: renderLeadDetail, mount: mountLeadDetail, navSection: '/leads', hideFab: true },
   { path: '/tasks', title: 'משימות', render: renderTasks, mount: mountTasks, navSection: '/tasks' },
   { path: '/analytics', title: 'אנליטיקס', render: renderAnalytics, navSection: '/analytics' },
+  { path: '/calendar', title: 'לוח תכנון שיווק', render: renderMarketingCalendar, mount: mountMarketingCalendar, navSection: '/calendar', hideFab: true },
   { path: '/settings', title: 'הגדרות', render: renderSettings, mount: mountSettings, hideFab: true },
 ];
 
 function renderNav(activeSection) {
-  const links = NAV_ITEMS.map(
-    (item) => `
+  const link = (item) => `
       <a class="nav-link" href="#${item.path}" ${item.path === activeSection ? 'aria-current="page"' : ''}>
         ${item.icon}
         <span>${item.label}</span>
-      </a>`
-  ).join('');
+      </a>`;
 
-  document.getElementById('nav').innerHTML = links;
-  document.getElementById('bottom-nav').innerHTML = links;
+  document.getElementById('nav').innerHTML = NAV_ITEMS.map(link).join('');
+  document.getElementById('bottom-nav').innerHTML = NAV_ITEMS
+    .filter((item) => !item.desktopOnly)
+    .map(link)
+    .join('');
 }
 
 function render() {

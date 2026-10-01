@@ -1820,3 +1820,129 @@ select.field-input {
   border-color: #b8dfc8;
   color: var(--color-success);
 }
+
+/* ---------- Marketing calendar ---------- */
+
+.calendar-list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * Mobile: the dates on their own line, then the name, then what it means.
+ * Nothing is abbreviated to fit.
+ */
+.calendar-row {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  border-inline-start: 4px solid var(--color-border);
+}
+
+/* A major holiday stops the week; a modern observance does not. The words say
+   so too – the edge colour only repeats them. */
+.calendar-row-major {
+  border-inline-start-color: var(--color-danger);
+}
+
+.calendar-row-minor,
+.calendar-row-modern {
+  border-inline-start-color: var(--color-warning);
+}
+
+.calendar-row-free {
+  border-inline-start-color: var(--color-success);
+}
+
+.calendar-when {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.calendar-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.calendar-tag {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.calendar-row-major .calendar-tag {
+  color: var(--color-danger);
+}
+
+.calendar-row-free .calendar-tag {
+  color: var(--color-success);
+}
+
+.calendar-source {
+  margin-top: var(--space-5);
+}
+
+/* The credit link is small text; the padding gives it a thumb-sized target
+   without changing where the line sits. */
+.calendar-source a {
+  display: inline-block;
+  padding-block: 11px;
+  margin-block: -11px;
+}
+
+/* ---------- Shabbat times ---------- */
+
+.shabbat-times {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.shabbat-time {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.shabbat-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.shabbat-clock {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-primary-hover);
+  font-variant-numeric: tabular-nums;
+}
+
+.shabbat-date {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 900px) {
+  /* Wide enough for the dates, the name and the meaning to share a line. */
+  .calendar-row {
+    grid-template-columns: 130px 1fr auto;
+    gap: var(--space-4);
+    align-items: baseline;
+  }
+
+  .calendar-list,
+  .shabbat-times {
+    max-width: 720px;
+  }
+}
