@@ -2,6 +2,7 @@ import { icons } from './icons.js';
 import { getCurrentPath, matchRoute, startRouter } from './router.js';
 import { getSyncStatus, loadFromAirtable, watchSync } from './store.js';
 import { usingAirtable } from './settings.js';
+import { mountContentInsights, renderContentInsights } from './views/content-insights.js';
 import { mountDashboard, renderDashboard } from './views/dashboard.js';
 import { mountLeadDetail, renderLeadDetail } from './views/lead-detail.js';
 import { mountLeadForm, renderLeadForm } from './views/lead-form.js';
@@ -34,6 +35,7 @@ const NAV_ITEMS = [
   // The bottom bar on a phone holds four (SPEC section 5), so this one lives
   // in the desktop sidebar and is reached from the Dashboard on a phone.
   { path: '/calendar', label: 'לוח שיווק', icon: icons.calendar, desktopOnly: true },
+  { path: '/content', label: 'מה עובד בתוכן', icon: icons.content, desktopOnly: true },
 ];
 
 /** @type {Route[]} */
@@ -47,6 +49,7 @@ const ROUTES = [
   { path: '/tasks', title: 'משימות', render: renderTasks, mount: mountTasks, navSection: '/tasks' },
   { path: '/analytics', title: 'אנליטיקס', render: renderAnalytics, navSection: '/analytics' },
   { path: '/calendar', title: 'לוח תכנון שיווק', render: renderMarketingCalendar, mount: mountMarketingCalendar, navSection: '/calendar', hideFab: true },
+  { path: '/content', title: 'מה עובד בתוכן', render: renderContentInsights, mount: mountContentInsights, navSection: '/content', hideFab: true },
   { path: '/settings', title: 'הגדרות', render: renderSettings, mount: mountSettings, hideFab: true },
 ];
 

@@ -1112,3 +1112,13 @@ Airtable's own messages are terse, so the screen explains the likely cause:
 29. The token does not appear in the code, the repository or on screen.
 30. An Airtable failure does not lose data or leave an empty screen.
 31. `Reset Demo Data` does not touch the Airtable table.
+32. The "What works in content" screen shows data from the summary file, with no token and no commenter details.
+
+## 26.4 "What Works in Content" Screen
+
+A screen showing what Instagram content works for coaches who speak to a similar audience: women aged 30–50 who struggle with people-pleasing, guilt, fear of disappointing and choosing themselves.
+
+- **Collection:** a separate script runs `apify/instagram-scraper` for the 20 latest posts of each of ten accounts, and the comments on the 10 most discussed posts. Each run is capped at $1 of the free credit.
+- **Analysis:** Claude labels each post's topic and opening and extracts phrases from the comments, by reading, with no extra API.
+- **The screen:** four cards (posts, accounts, leading topic, leading format), average engagement by topic and by format (with the median, because one viral post can skew an average), the top 10 posts, "their words", 3–5 insights and the last update date.
+- **Privacy:** the token lives only in `.env`. Raw data is kept in `data-raw/`, outside the repository. No commenter's name or details appear on the screen or in the repository.

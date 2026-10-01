@@ -9,6 +9,7 @@ export const icons = {
   tasks: svg('<rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2.5v3M16 2.5v3M4 9h16"/><path d="m8.5 14.5 2.2 2.2 4.8-4.7"/>'),
   analytics: svg('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
   calendar: svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/><path d="M8 15h2M14 15h2"/>'),
+  content: svg('<path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/>'),
   // Points left, the direction "forward" runs in a right-to-left interface.
   // Drawn rather than typed: the characters < and > are mirrored automatically
   // inside RTL text, which makes them point the wrong way.

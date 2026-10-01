@@ -46,6 +46,9 @@ Done:
   four periods.
 - **Marketing calendar** – Jewish holidays, Shabbat times and the weeks a
   campaign can actually run in, from a live calendar API.
+- **What works in content** – which Instagram topics, formats and openings get
+  a response from women like this business's clients, from ten coaches'
+  public posts collected through Apify.
 - Changes are saved in the browser, and can be reset to the demo data.
 - **Optional Airtable backend** – keep the leads in an Airtable table instead.
 - **CSV export** – two files, ready to import into Airtable or a spreadsheet.
@@ -97,6 +100,60 @@ network code never builds HTML.
 discard the other — losing the Shabbat times still leaves the holidays. A
 friendly message and a retry button appear in place of whatever did not load,
 and nothing else in the app is affected.
+
+## What works in content (Apify)
+
+The **מה עובד בתוכן** screen (desktop sidebar, or the Dashboard on a phone)
+shows what Instagram content gets a response from women aged 30–50 who struggle
+with people-pleasing, guilt and choosing themselves. It is based on the 20 most
+recent posts of ten coaches who speak to that audience: engagement by topic and
+by format, the ten strongest posts, the phrases the women use in the comments,
+and a few insights for planning content.
+
+**Actor:** [`apify/instagram-scraper`](https://apify.com/apify/instagram-scraper),
+Apify's official Instagram scraper. It runs twice: once for posts
+(`resultsType: "posts"`) and once for the comments on the ten most discussed
+posts (`resultsType: "comments"`).
+
+### The token
+
+Put your Apify token in a file named `.env` in the project folder:
+
+```text
+APIFY_TOKEN=apify_api_...
+```
+
+Copy it from **console.apify.com → Settings → API & Integrations**.
+`.env` is in `.gitignore`; `.env.example` shows the format with an empty value.
+Only the collection script reads the token. It never reaches the site, the
+browser or the repository.
+
+### Refreshing the data
+
+```bash
+python scripts/collect_instagram.py
+```
+
+That one command collects the posts and comments into `data-raw/`. Then ask
+Claude to analyse the new data: it labels each new post's topic and opening in
+`data/content-labels.json`, updates the summaries, phrases and insights in
+`data/content-notes.json`, and runs `python scripts/build_content_insights.py`
+to write `data/content-insights.json`, the only file the screen reads. The
+analysis is done by reading, not by another API, so it is not automatic.
+
+### Cost
+
+The scraper charges per result: about $0.0027 each on the free plan, so a full
+run (200 posts, 150 comments) costs about $0.95. That comes out of the free
+monthly credit, which needs no credit card. Every run is capped at $1, and the
+script stops before starting if the remaining credit cannot cover that.
+
+### Privacy
+
+`data-raw/` holds the raw results, including commenters' usernames, and is in
+`.gitignore`. What is committed and shown is only figures, labels and wording
+written for this screen: no commenter's name, and no post's full text. The
+coaches' public profile names appear next to their posts, with a link.
 
 ## Using Airtable as the database
 
@@ -226,6 +283,8 @@ js/store.js       Holds the app's leads; saves to the browser and to Airtable
 js/airtable.js    Airtable API client and the mapping to and from a lead
 js/hebcal.js      Hebcal API client (holidays, Shabbat times)
 js/calendar.js    Free campaign windows, grouping a festival's days
+data/             The content screen's summary, and the labels it is built from
+scripts/          Instagram collection (Apify) and building the content summary
 js/settings.js    Where the leads live, and the token (browser only)
 js/dates.js       Date helpers ('YYYY-MM-DD' strings)
 js/demo-data.js   16 fictional demo leads

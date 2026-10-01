@@ -4,6 +4,7 @@ node_modules/
 # Environment and secrets
 .env
 .env.*
+!.env.example
 
 # OS and editor files
 .DS_Store
@@ -21,3 +22,7 @@ desktop.ini
 
 # Exported data. Generated from the app; not source code.
 leadflow-*.csv
+
+# Raw scraped Instagram data. Comments carry people's usernames, so only the
+# analysed summary in data/ is committed.
+data-raw/

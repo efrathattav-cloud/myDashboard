@@ -323,6 +323,7 @@ export function renderDashboard() {
           איפוס נתוני ההדגמה
         </button>
         <a class="btn btn-secondary" href="#/calendar">לוח תכנון שיווק</a>
+        <a class="btn btn-secondary" href="#/content">מה עובד בתוכן</a>
         <a class="btn btn-secondary" href="#/settings">הגדרות ומקור נתונים</a>
       </div>
       <div class="delete-confirm" data-role="reset-confirm" hidden>
