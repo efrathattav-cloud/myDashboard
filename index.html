@@ -15,10 +15,11 @@
   <div class="app-shell">
     <!-- Desktop sidebar / mobile top bar share the brand -->
     <aside class="sidebar" aria-label="ניווט ראשי">
-      <div class="brand">
+      <a class="brand" href="#/dashboard">
         <span class="brand-mark" aria-hidden="true">LF</span>
         <span class="brand-name">LeadFlow</span>
-      </div>
+        <span class="visually-hidden"> – חזרה לדשבורד</span>
+      </a>
       <nav class="nav" id="nav"></nav>
       <a class="btn btn-primary sidebar-new-lead" href="#/leads/new">
         <span aria-hidden="true">+</span> ליד חדש
@@ -26,10 +27,11 @@
     </aside>
 
     <header class="topbar">
-      <div class="brand">
+      <a class="brand" href="#/dashboard">
         <span class="brand-mark" aria-hidden="true">LF</span>
         <span class="brand-name">LeadFlow</span>
-      </div>
+        <span class="visually-hidden"> – חזרה לדשבורד</span>
+      </a>
     </header>
 
     <p id="sync-status" class="sync-status" role="status" hidden></p>
