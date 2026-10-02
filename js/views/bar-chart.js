@@ -23,6 +23,8 @@ import { escapeHtml } from '../html.js';
  * @property {number} value   Drives the bar's length.
  * @property {string} [text]  What is printed as the value. Defaults to the number.
  * @property {string} [note]  A quieter second line, e.g. "2 מתוך 4 לידים".
+ * @property {boolean} [muted] Drawn paler, for a row built on too little data
+ *   to act on. The note must say so too; paleness alone is not the message.
  */
 
 /**
@@ -47,7 +49,7 @@ export function barChart({ id, title, rows, hint, emptyText = 'אין נתוני
               // the same as "0".
               const percent = row.value === 0 ? 0 : Math.max((row.value / largest) * 100, 4);
               return `
-                <li class="bar-row">
+                <li class="bar-row${row.muted ? ' bar-row-muted' : ''}">
                   <span class="bar-label">${escapeHtml(row.label)}</span>
                   <span class="bar-track" aria-hidden="true">
                     <span class="bar-fill" style="width: ${percent.toFixed(1)}%"></span>

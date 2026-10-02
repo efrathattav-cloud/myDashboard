@@ -32,17 +32,18 @@ RAW_DIR = ROOT / 'data-raw'
 ACTOR = 'apify~instagram-scraper'
 API = 'https://api.apify.com/v2'
 
+# Coaches who speak to women struggling with people-pleasing, guilt and
+# choosing themselves. A nail technician and a business coach were taken off
+# after the first run: they were measuring a different audience.
 ACCOUNTS = [
     'tzofnatrosenthal',
     'oriya_nir_coach',
     'tipul.shelly',
     'coralfigaro',
     'hilla_healing',
-    'chen_mekaiten',
     'shany_barda',
     'hadaserez_imalevia',
     'veronika_psychodrama',
-    'kfironitta',
 ]
 POSTS_PER_ACCOUNT = 20
 POSTS_WITH_COMMENTS = 10

@@ -47,8 +47,8 @@ Done:
 - **Marketing calendar** – Jewish holidays, Shabbat times and the weeks a
   campaign can actually run in, from a live calendar API.
 - **What works in content** – which Instagram topics, formats and openings get
-  a response from women like this business's clients, from ten coaches'
-  public posts collected through Apify.
+  a response from women like this business's clients, from eight coaches'
+  public posts collected through Apify, with three ready post ideas.
 - Changes are saved in the browser, and can be reset to the demo data.
 - **Optional Airtable backend** – keep the leads in an Airtable table instead.
 - **CSV export** – two files, ready to import into Airtable or a spreadsheet.
@@ -106,9 +106,17 @@ and nothing else in the app is affected.
 The **מה עובד בתוכן** screen (desktop sidebar, or the Dashboard on a phone)
 shows what Instagram content gets a response from women aged 30–50 who struggle
 with people-pleasing, guilt and choosing themselves. It is based on the 20 most
-recent posts of ten coaches who speak to that audience: engagement by topic and
-by format, the ten strongest posts, the phrases the women use in the comments,
-and a few insights for planning content.
+recent posts of eight coaches who speak to that audience, and opens with three
+post ideas built from what worked, each with a button that carries it to the
+marketing calendar. Below them: what works by topic, opening and format, the
+ten posts that stood out most, the phrases the women use in the comments, and
+the insights behind the ideas.
+
+**How a post is measured.** Not by raw likes and comments, which mostly
+measure follower count. Each post is divided by its own account's median post,
+so "×1.7" means 1.7 times that account's usual response, and groups are
+compared by the median of that ratio. A group with fewer than five posts is
+still shown, paler and labelled as too thin to act on.
 
 **Actor:** [`apify/instagram-scraper`](https://apify.com/apify/instagram-scraper),
 Apify's official Instagram scraper. It runs twice: once for posts
@@ -144,7 +152,7 @@ analysis is done by reading, not by another API, so it is not automatic.
 ### Cost
 
 The scraper charges per result: about $0.0027 each on the free plan, so a full
-run (200 posts, 150 comments) costs about $0.95. That comes out of the free
+run (160 posts, 150 comments) costs about $0.85. That comes out of the free
 monthly credit, which needs no credit card. Every run is capped at $1, and the
 script stops before starting if the remaining credit cannot cover that.
 

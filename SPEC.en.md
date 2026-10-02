@@ -1118,7 +1118,8 @@ Airtable's own messages are terse, so the screen explains the likely cause:
 
 A screen showing what Instagram content works for coaches who speak to a similar audience: women aged 30–50 who struggle with people-pleasing, guilt, fear of disappointing and choosing themselves.
 
-- **Collection:** a separate script runs `apify/instagram-scraper` for the 20 latest posts of each of ten accounts, and the comments on the 10 most discussed posts. Each run is capped at $1 of the free credit.
+- **Collection:** a separate script runs `apify/instagram-scraper` for the 20 latest posts of each of eight accounts (a nail technician and a business coach were removed after the first run, as they measure a different audience), and the comments on the 10 most discussed posts. Each run is capped at $1 of the free credit.
 - **Analysis:** Claude labels each post's topic and opening and extracts phrases from the comments, by reading, with no extra API.
-- **The screen:** four cards (posts, accounts, leading topic, leading format), average engagement by topic and by format (with the median, because one viral post can skew an average), the top 10 posts, "their words", 3–5 insights and the last update date.
+- **Measurement:** each post is measured against its own account's usual (median) post, because raw counts mostly measure follower numbers. Groups are compared by the median of that ratio. A group of fewer than 5 posts is shown paler and labelled too thin to act on.
+- **The screen:** three post ideas at the top (topic, format, opening, a phrase from the comments and the evidence), each with a button that carries it to the marketing calendar. Then: what works best (topic, format, opening), the insights, charts by topic, opening and format, the 10 posts that stood out most, "their words" and the last update date.
 - **Privacy:** the token lives only in `.env`. Raw data is kept in `data-raw/`, outside the repository. No commenter's name or details appear on the screen or in the repository.

@@ -12,6 +12,7 @@ import { daysFromToday, formatFullDate, formatShortDate, today } from '../dates.
 import { freeWeeks, groupHolidays } from '../calendar.js';
 import { fetchHolidays, fetchShabbat } from '../hebcal.js';
 import { escapeHtml } from '../html.js';
+import { getCurrentQuery } from '../router.js';
 
 /** Ashkelon. Hebcal's own id for the city, from geonames.org. */
 const CITY_ID = 295620;
@@ -114,6 +115,27 @@ function shabbatSection(shabbat) {
     <p class="field-hint">אשקלון · שעון ישראל</p>`;
 }
 
+/**
+ * A post idea carried over from the "what works in content" screen, so it
+ * stays in view while a free week is picked for it. It lives only in the
+ * address: nothing is saved, and the card is gone once the idea is dealt with.
+ */
+function ideaCard() {
+  const idea = getCurrentQuery().get('idea')?.trim();
+  if (!idea) return '';
+
+  return `
+    <section class="card content-idea calendar-idea" aria-labelledby="idea-heading">
+      <h2 class="section-title" id="idea-heading">הרעיון שבחרת לתכנן</h2>
+      <p class="content-idea-hook">״${escapeHtml(idea)}״</p>
+      <p class="field-hint">בחרי לו אחד מהשבועות הפנויים למטה, ורצוי לא ערב חג, כשהקהל פחות גולל.</p>
+      <div class="export-buttons">
+        <a class="btn btn-secondary" href="#/content">חזרה לרעיונות</a>
+        <a class="btn btn-secondary" href="#/calendar">הסתרת הרעיון</a>
+      </div>
+    </section>`;
+}
+
 /** @returns {string} */
 export function renderMarketingCalendar() {
   return `
@@ -121,6 +143,8 @@ export function renderMarketingCalendar() {
       <h1 class="page-title">לוח תכנון שיווק</h1>
       <p class="page-subtitle">מתי אפשר לפתוח קמפיין בלי להתנגש בחג או בשבת.</p>
     </header>
+
+    ${ideaCard()}
 
     <div data-role="calendar-body">
       <p class="card empty-state" data-role="loading">טוען מלוח השנה…</p>
