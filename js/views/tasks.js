@@ -1,4 +1,4 @@
-// Screen 5 – Tasks and follow-up (SPEC.en.md section 12).
+// Screen 5 – Tasks and follow-up (SPEC.md section 3.5).
 //
 // The one screen that answers "who do I need to get back to right now?".
 // Three groups, most urgent first: what is late, what is due today, what is
@@ -8,7 +8,7 @@
 // Whether a group is open is remembered between visits: collapsing something
 // only to find it open again on the next visit is worse than not collapsing.
 //
-// "Done" does not just tick a box. SPEC section 12 says it should also let you
+// "Done" does not just tick a box. SPEC section 3.5 says it should also let you
 // record what happened and decide what comes next – which is exactly the panel
 // already built into the lead card. So the button opens that panel instead of
 // repeating it here, and the lead's full context comes with it.
@@ -70,7 +70,7 @@ function taskCard(lead, group, now) {
   const daysLate = group === 'overdue' ? daysSinceLastInteraction(lead, now) : null;
 
   // The date always says what it means in words, so the group's colour is
-  // never the only thing carrying the message (SPEC section 21).
+  // never the only thing carrying the message (SPEC section 2).
   const when =
     group === 'overdue'
       ? `באיחור · ${date}`

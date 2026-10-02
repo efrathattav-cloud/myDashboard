@@ -4,7 +4,7 @@
 // forgotten? how much did we make this month? The answers live here, once, so
 // the Dashboard, the Leads list and the Tasks screen can never disagree.
 //
-// The rules themselves come from SPEC.en.md section 20.
+// The rules themselves come from SPEC.md section 4.
 //
 // Each function takes `now` as an argument instead of reading the clock
 // itself. That keeps them predictable and easy to check.
@@ -184,7 +184,7 @@ export function attentionSummary(leads, now = today()) {
   };
 }
 
-// ---------- Search and filters (SPEC sections 7.1 and 7.2) ----------
+// ---------- Search and filters (SPEC section 3.2) ----------
 
 /**
  * Does the lead match one of the follow-up situations?
@@ -210,7 +210,7 @@ function matchesFollowUp(lead, situation, now) {
 
 /**
  * Does the lead match the free-text search?
- * Searches name, phone and notes (SPEC section 7.1).
+ * Searches name, phone and notes (SPEC section 3.2).
  *
  * Phone numbers are compared digit by digit, so searching "0524" finds
  * "052-4471903" even though the stored number contains a dash.
@@ -296,7 +296,7 @@ export function sortLeadsForList(leads, now = today()) {
 
 /**
  * The pending actions, split into the three groups the Tasks screen shows
- * (SPEC section 12). Each group is sorted by date, oldest first.
+ * (SPEC section 3.5). Each group is sorted by date, oldest first.
  *
  * Only leads still in play appear: a won or lost lead has nothing pending,
  * which is the same rule the rest of this file uses.

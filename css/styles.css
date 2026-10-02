@@ -13,7 +13,7 @@
   /*
    * These three were measured against both white and their own soft
    * backgrounds, and darkened until every pairing clears 4.5:1 – the level at
-   * which normal-size text stays readable (SPEC section 21). The soft
+   * which normal-size text stays readable (SPEC section 2). The soft
    * background is the harder test of the two, so it set the value.
    */
   --color-danger: #ba3e39;
@@ -836,7 +836,7 @@ select.field-input {
 
 /* ---------- Forms ---------- */
 
-/* Mobile first: one field per row (SPEC section 17). */
+/* Mobile first: one field per row (SPEC section 2). */
 .lead-form {
   display: grid;
   gap: var(--space-4);

@@ -1,4 +1,4 @@
-// Screen 4 – the lead card (SPEC.en.md section 9).
+// Screen 4 – the lead card (SPEC.md section 3.4).
 //
 // Everything known about one lead, in the order the SPEC lists it: who she is
 // and what needs doing, then the details, then the history of the
@@ -93,7 +93,7 @@ function priceRows(lead) {
 }
 
 /**
- * The sale, shown only for a lead that became a client (SPEC section 10).
+ * The sale, shown only for a lead that became a client (SPEC section 3.3).
  *
  * @param {import('../model.js').Lead} lead
  */
@@ -117,7 +117,7 @@ function saleSection(lead) {
 }
 
 /**
- * Why a lead did not close (SPEC section 11).
+ * Why a lead did not close (SPEC section 3.3).
  *
  * @param {import('../model.js').Lead} lead
  */
@@ -134,7 +134,7 @@ function lostSection(lead) {
 }
 
 /**
- * The conversation history (SPEC section 9.3).
+ * The conversation history (SPEC section 3.4).
  * Oldest first, so it reads from the first contact forward.
  *
  * @param {import('../model.js').Lead} lead
@@ -171,7 +171,7 @@ function interactionsSection(lead) {
 }
 
 /**
- * Changing the status without opening the whole form (SPEC section 9.1).
+ * Changing the status without opening the whole form (SPEC section 3.4).
  *
  * Only the statuses of a lead still in play are offered. Closing a lead as won
  * or lost needs a sale or a reason, and those live in the form – so the panel
@@ -209,8 +209,8 @@ function quickStatus(lead) {
 }
 
 /**
- * The panel for recording a conversation (SPEC section 9.4) and deciding what
- * comes next (SPEC section 12).
+ * The panel for recording a conversation (SPEC section 3.4) and deciding what
+ * comes next (SPEC section 3.5).
  *
  * One panel does both jobs, because in practice they are the same moment: you
  * write down what was said, and then you decide what to do about it. Leaving

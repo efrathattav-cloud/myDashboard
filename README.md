@@ -4,12 +4,12 @@ LeadFlow is a simple, mobile-first dashboard for managing leads in a small coach
 
 This is an MVP demo: it runs entirely in the browser, with fictional demo data and no backend or database.
 
-- Product requirements: [`SPEC.md`](SPEC.md) (Hebrew), [`SPEC.en.md`](SPEC.en.md) (English)
+- Product requirements: [`SPEC.md`](SPEC.md)
 - Development practices: [`PRACTICE.md`](PRACTICE.md)
 
 ## Status
 
-The MVP is complete: all 24 acceptance criteria in `SPEC.en.md` pass.
+The MVP is complete, and the app meets the acceptance checks in `SPEC.md` section 9.
 
 Done:
 
@@ -25,7 +25,7 @@ Done:
 - [x] Analytics (conversion rate, funnel, by source, by product)
 - [x] Changes saved in the browser, with a Reset Demo Data option
 - [x] Accessibility, mobile and RTL review
-- [x] All 24 acceptance criteria in `SPEC.en.md` verified
+- [x] Acceptance checks in `SPEC.md` verified
 
 ## Features
 

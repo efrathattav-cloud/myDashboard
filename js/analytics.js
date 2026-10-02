@@ -1,4 +1,4 @@
-// The numbers behind the Analytics screen (SPEC.en.md section 13).
+// The numbers behind the Analytics screen (SPEC.md section 3.6).
 //
 // One rule decides what belongs to the selected period: **a lead belongs to
 // the period it came in.** Every figure on the screen follows it – leads,
@@ -9,7 +9,7 @@
 import { startOfMonth, startOfWeek } from './dates.js';
 import { LOST_REASONS, PRODUCTS, SOURCES } from './model.js';
 
-/** The periods offered at the top of the screen (SPEC section 13.1). */
+/** The periods offered at the top of the screen (SPEC section 3.6). */
 export const PERIODS = {
   week: 'השבוע',
   month: 'החודש',
@@ -52,7 +52,7 @@ export function leadsInPeriod(leads, period) {
 /**
  * Counts leads per source, always listing every source – including the ones
  * with nothing, so a channel that brought nobody is visible rather than
- * missing (SPEC section 13.2).
+ * missing (SPEC section 3.6).
  *
  * @param {import('./model.js').Lead[]} leads
  * @returns {Array<{key: string, label: string, value: number}>}
@@ -66,7 +66,7 @@ export function countBySource(leads) {
 }
 
 /**
- * Counts paying clients per source (SPEC section 13.3), together with how many
+ * Counts paying clients per source (SPEC section 3.6), together with how many
  * leads that source brought. The pair is the whole point of this chart: a
  * channel with many enquiries is not the same as a channel with many clients.
  *
@@ -86,7 +86,7 @@ export function clientsBySource(leads) {
 }
 
 /**
- * Revenue per source, using the price actually agreed (SPEC section 13.6).
+ * Revenue per source, using the price actually agreed (SPEC section 3.6).
  *
  * @param {import('./model.js').Lead[]} leads
  * @returns {Array<{key: string, label: string, value: number}>}
@@ -102,7 +102,7 @@ export function revenueBySource(leads) {
 }
 
 /**
- * How many leads showed interest in each product (SPEC section 13.7).
+ * How many leads showed interest in each product (SPEC section 3.6).
  * A lead interested in two products counts in both, so these do not add up to
  * the number of leads – and the screen says so.
  *
@@ -142,7 +142,7 @@ const STATUS_RANK = {
 };
 
 /**
- * The sales funnel (SPEC section 13.5).
+ * The sales funnel (SPEC section 3.6).
  *
  * @param {import('./model.js').Lead[]} leads
  * @returns {Array<{key: string, label: string, value: number}>}
@@ -162,10 +162,9 @@ export function funnelStages(leads) {
 }
 
 /**
- * Why leads did not become clients (SPEC section 11).
+ * Why leads did not become clients (SPEC section 3.3).
  *
- * The SPEC records the reason "so that analytics on reasons for not closing
- * can be shown" – this is that. It is the one chart that says what to change
+ * It is the one chart that says what to change
  * rather than what happened: a pile of "price too high" is a pricing
  * conversation, a pile of "didn't get back to me" is a follow-up one.
  *

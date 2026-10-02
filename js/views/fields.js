@@ -1,7 +1,7 @@
 // Form field building blocks, shared by every form in the app.
 //
 // Each one renders the same three things together: a visible label, the input,
-// and a place for an error message (SPEC section 21 – a placeholder is never a
+// and a place for an error message (SPEC section 2 – a placeholder is never a
 // substitute for a label).
 //
 // When a field has an error it gets aria-invalid and aria-describedby, so a

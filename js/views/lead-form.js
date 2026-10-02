@@ -1,4 +1,4 @@
-// Screen 3 – adding and editing a lead (SPEC.en.md sections 8, 10 and 11).
+// Screen 3 – adding and editing a lead (SPEC.md section 3.3).
 //
 // One screen serves both jobs. With no id in the address it starts a new lead;
 // with an id it loads that lead. Everything below is the same either way, so

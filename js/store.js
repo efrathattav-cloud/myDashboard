@@ -5,7 +5,7 @@
 // where the leads come from.
 //
 // Changes are kept in the browser's own storage, so a refresh does not throw
-// away the morning's work (SPEC section 16). There is still no server and no
+// away the morning's work (SPEC section 6). There is still no server and no
 // database: everything lives on this one device, in this one browser.
 //
 // Storage can fail for reasons that are nobody's fault – a private window,

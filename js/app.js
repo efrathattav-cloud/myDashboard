@@ -32,7 +32,7 @@ const NAV_ITEMS = [
   { path: '/leads', label: 'לידים', icon: icons.leads },
   { path: '/tasks', label: 'משימות', icon: icons.tasks },
   { path: '/analytics', label: 'אנליטיקס', icon: icons.analytics },
-  // The bottom bar on a phone holds four (SPEC section 5), so this one lives
+  // The bottom bar on a phone holds four (SPEC section 2), so this one lives
   // in the desktop sidebar and is reached from the Dashboard on a phone.
   { path: '/calendar', label: 'לוח שיווק', icon: icons.calendar, desktopOnly: true },
   { path: '/content', label: 'מה עובד בתוכן', icon: icons.content, desktopOnly: true },

@@ -1,4 +1,4 @@
-// Screen 2 – Leads (SPEC.en.md section 7).
+// Screen 2 – Leads (SPEC.md section 3.2).
 //
 // The search text and the five filters live in the address bar, as
 // "#/leads?source=instagram&followup=overdue". That means a filtered view
@@ -66,7 +66,7 @@ function writeFilters(filters) {
  * A labelled dropdown built from one of the model maps.
  *
  * @param {string} name       Matches a key of FILTER_PARAMS.
- * @param {string} label      Visible label (SPEC section 21: never a placeholder only).
+ * @param {string} label      Visible label (SPEC section 2: never a placeholder only).
  * @param {Record<string, string>} options
  * @param {string} selected
  * @param {string} anyLabel   Text for "no filter".

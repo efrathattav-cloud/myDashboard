@@ -1,4 +1,4 @@
-// Validation rules for a lead (SPEC.en.md section 19).
+// Validation rules for a lead (SPEC.md section 3.3).
 //
 // Kept apart from the form on purpose: these are plain functions that take a
 // lead and return messages. They know nothing about inputs, HTML or the DOM,
@@ -51,7 +51,7 @@ export function validateLead(lead) {
     errors.offeredPrice = 'כדי לחשב מחיר אחרי הנחה יש להזין מחיר שהוצע.';
   }
 
-  // Closing a lead as a client (SPEC section 10).
+  // Closing a lead as a client (SPEC section 3.3).
   if (lead.status === 'won') {
     if (!lead.sale?.product) errors.saleProduct = 'יש לבחור מה נרכש.';
     if (!(lead.sale?.agreedPrice > 0)) errors.agreedPrice = 'יש להזין את המחיר שסוכם.';
@@ -61,7 +61,7 @@ export function validateLead(lead) {
     }
   }
 
-  // A lead that did not close (SPEC section 11).
+  // A lead that did not close (SPEC section 3.3).
   if (lead.status === 'lost') {
     if (!lead.lostReason) errors.lostReason = 'יש לבחור סיבה.';
     if (lead.lostReason === 'other' && !filled(lead.customLostReason)) {

@@ -1,7 +1,7 @@
-// Screen 6 – Analytics (SPEC.en.md section 13).
+// Screen 6 – Analytics (SPEC.md section 3.6).
 //
 // Not a BI tool: a handful of figures that answer the third question in
-// SPEC section 25 – where do the clients who actually buy come from?
+// SPEC section 1 – where do the clients who actually buy come from?
 //
 // The conversion rate is a single number, so it is shown as one, not as a
 // chart. Everything else is a comparison across a few named categories, which
@@ -27,7 +27,7 @@ import { barChart } from './bar-chart.js';
 
 const PATH = '/analytics';
 
-/** The period currently chosen, defaulting to this month (SPEC section 13.1). */
+/** The period currently chosen, defaulting to this month (SPEC section 3.6). */
 function currentPeriod() {
   const asked = getCurrentQuery().get('period');
   return asked && asked in PERIODS ? asked : 'month';
@@ -55,7 +55,7 @@ function periodFilter(active) {
 }
 
 /**
- * Why leads did not close (SPEC section 11).
+ * Why leads did not close (SPEC section 3.3).
  *
  * The one chart here that points at something to change rather than
  * describing what happened. Free text written under "other" is printed

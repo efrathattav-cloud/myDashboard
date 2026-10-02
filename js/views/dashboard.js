@@ -1,4 +1,4 @@
-// Screen 1 – the Dashboard (SPEC.en.md section 6).
+// Screen 1 – the Dashboard (SPEC.md section 3.1).
 //
 // Order on the screen follows the SPEC: the business picture first, follow-up
 // second. Everything shown here is calculated in leads.js, never inline.
@@ -49,7 +49,7 @@ function kpiCard(label, value, comparison = '') {
  * Describes a change against the previous month in words.
  *
  * Written out rather than shown as a coloured arrow, so it reads the same
- * without colour (SPEC section 21). It never repeats the figure printed above
+ * without colour (SPEC section 2). It never repeats the figure printed above
  * it – the card already says that.
  *
  * @param {number} current
@@ -104,7 +104,7 @@ function alertRow(count, text, href, variant) {
  * way to deal with it.
  *
  * The counts above answer "how many". This answers "who" – which is the
- * second of the three questions the whole app exists for (SPEC section 25),
+ * second of the three questions the whole app exists for (SPEC section 1),
  * and it used to take a tap to find out.
  *
  * @param {import('../model.js').Lead} lead
@@ -129,7 +129,7 @@ function urgentRow(lead, now) {
 }
 
 /**
- * The "needs attention" section (SPEC section 6.3).
+ * The "needs attention" section (SPEC section 3.1).
  *
  * @param {import('../model.js').Lead[]} leads
  * @param {string} now
@@ -174,7 +174,7 @@ function attentionSection(leads, now) {
 }
 
 /**
- * Where the paying clients actually come from (SPEC section 25, question 3).
+ * Where the paying clients actually come from (SPEC section 1, question 3).
  *
  * A source that brings many enquiries is not the same as one that brings
  * clients, so each line says both: how many clients, out of how many leads.
@@ -215,7 +215,7 @@ function sourcesSection(leads) {
 }
 
 /**
- * The recent leads list (SPEC section 6.4).
+ * The recent leads list (SPEC section 3.1).
  *
  * @param {import('../model.js').Lead[]} leads
  * @param {string} now

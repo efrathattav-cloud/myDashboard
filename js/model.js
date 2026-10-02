@@ -8,7 +8,7 @@
 // Labels are in Hebrew because they are what the user reads on screen.
 // Screens should never hard-code a Hebrew label – they look it up here.
 //
-// The shapes of Lead, Interaction and Sale are defined in SPEC.en.md section 14.
+// The shapes of Lead, Interaction and Sale are defined in SPEC.md section 5.
 
 /** How the lead first reached the business. */
 export const SOURCES = {
@@ -90,7 +90,7 @@ export const LOST_REASONS = {
   other: 'אחר',
 };
 
-/** The follow-up situations a lead can be filtered by (SPEC section 7.2). */
+/** The follow-up situations a lead can be filtered by (SPEC section 3.2). */
 export const FOLLOW_UP_FILTERS = {
   today: 'לביצוע היום',
   overdue: 'באיחור',

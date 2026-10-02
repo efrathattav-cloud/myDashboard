@@ -19,7 +19,7 @@ import {
 
 /**
  * A small pill of text.
- * Accessibility (SPEC section 21): a badge always says what it means in words.
+ * Accessibility (SPEC section 2): a badge always says what it means in words.
  * Colour only repeats what the text already says, so the card still makes
  * sense in black and white or to a screen reader.
  *
