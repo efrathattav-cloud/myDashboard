@@ -50,7 +50,8 @@ Done:
   a response from women like this business's clients, from eight coaches'
   public posts collected through Apify, with three ready post ideas.
 - Changes are saved in the browser, and can be reset to the demo data.
-- **Optional Airtable backend** – keep the leads in an Airtable table instead.
+- **Airtable as the database** – the leads live in an Airtable table, linked
+  to the app from Settings. The browser keeps a copy for when it is offline.
 - **CSV export** – two files, ready to import into Airtable or a spreadsheet.
 
 ## The marketing calendar (Hebcal API)
