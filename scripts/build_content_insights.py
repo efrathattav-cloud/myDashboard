@@ -7,7 +7,8 @@ Inputs:
   data-raw/posts.json, data-raw/comments.json, data-raw/meta.json
                               from collect_instagram.py (not in git)
   data/content-labels.json    topic and opening of each post, by post code
-  data/content-notes.json     summaries, the women's phrases, insights, post ideas
+  data/content-notes.json     summaries, the women's phrases, insights, post ideas,
+                              and the opening lines picked for each kind of opening
 
 The labels and notes are written by Claude reading the raw posts and comments,
 not by a model call, so a fresh collection needs them updated before this
@@ -138,6 +139,31 @@ def main():
     if missing:
         sys.exit(f'Top posts with no summary in data/content-notes.json: {missing}')
 
+    by_code = {post['code']: post for post in posts}
+    opening_lift = {row['label']: row for row in by_opening}
+    hook_patterns = []
+    for group in notes['hookPatterns']:
+        hooks = []
+        for hook in group['hooks']:
+            post = by_code.get(hook['code'])
+            if post is None or post['lift'] is None:
+                sys.exit(f"Hook {hook['code']} is not a measurable post from the current accounts.")
+            hooks.append({
+                'text': hook['text'],
+                'lift': round(post['lift'], 1),
+                'account': post['account'],
+                'topic': post['topic'],
+                'url': post['url'],
+            })
+        hook_patterns.append({
+            'opening': group['opening'],
+            'pattern': group['pattern'],
+            'lift': opening_lift[group['opening']]['lift'],
+            'posts': opening_lift[group['opening']]['posts'],
+            'hooks': sorted(hooks, key=lambda hook: hook['lift'], reverse=True),
+        })
+    hook_patterns.sort(key=lambda group: group['lift'], reverse=True)
+
     output = {
         'collectedAt': meta['collectedAt'],
         'totals': {
@@ -165,6 +191,7 @@ def main():
             for post in top
         ],
         'ideas': notes['ideas'],
+        'hookPatterns': hook_patterns,
         'phrases': notes['phrases'],
         'insights': notes['insights'],
     }

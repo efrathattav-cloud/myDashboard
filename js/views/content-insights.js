@@ -72,6 +72,47 @@ function ideasSection(ideas) {
 }
 
 /**
+ * Opening lines that worked, grouped by the kind of opening, strongest kind
+ * first. These are the first line of the caption: for a reel the spoken or
+ * on-screen hook may differ, and the hint says so.
+ */
+function hooksSection(groups) {
+  return `
+    <section class="dashboard-section" aria-labelledby="hooks-heading">
+      <h2 class="section-title" id="hooks-heading">הוקים שעבדו</h2>
+      <p class="chart-hint">שורות פתיחה של פוסטים שבלטו, לפי סוג הפתיחה. זו השורה הראשונה בכיתוב: ברילס, ההוק שנאמר או שמופיע על המסך יכול להיות שונה.</p>
+      <div class="content-hook-groups">
+        ${groups
+          .map(
+            (group) => `
+              <section class="card content-hook-group" aria-label="${escapeHtml(group.opening)}">
+                <h3 class="content-hook-type">
+                  ${escapeHtml(group.opening)}
+                  <span class="content-hook-type-lift">${escapeHtml(`${times(group.lift)} מהרגיל · ${group.posts} פוסטים`)}</span>
+                </h3>
+                <p class="content-hook-pattern"><span class="content-idea-label">התבנית:</span> ${escapeHtml(group.pattern)}</p>
+                <ul class="content-hooks">
+                  ${group.hooks
+                    .map(
+                      (hook) => `
+                        <li class="content-hook">
+                          <span class="content-hook-text">״${escapeHtml(hook.text)}״</span>
+                          <span class="content-hook-meta">
+                            ${escapeHtml(`${times(hook.lift)} · ${hook.topic} · @${hook.account}`)}
+                            · <a href="${escapeHtml(hook.url)}" target="_blank" rel="noopener">לפוסט<span class="visually-hidden"> (נפתח בחלון חדש)</span></a>
+                          </span>
+                        </li>`
+                    )
+                    .join('')}
+                </ul>
+              </section>`
+          )
+          .join('')}
+      </div>
+    </section>`;
+}
+
+/**
  * A thin group is still shown, because hiding it would hide that the data is
  * thin. It goes last, paler, and says why.
  */
@@ -159,6 +200,8 @@ function renderData(data) {
       ${kpiCard('הפתיחה שהכי עובדת', leadingOpening.label, `${times(leadingOpening.lift)} מהרגיל · ${leadingOpening.posts} פוסטים`)}
       ${kpiCard('הבסיס', `${number(totals.posts)} פוסטים`, `מ־${totals.accounts} חשבונות · ${totals.withHiddenLikes} עם לייקים מוסתרים`)}
     </section>
+
+    ${hooksSection(data.hookPatterns)}
 
     ${insightsSection(data.insights)}
 

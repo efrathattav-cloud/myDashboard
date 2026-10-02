@@ -256,6 +256,117 @@
    "experiment": true
   }
  ],
+ "hookPatterns": [
+  {
+   "opening": "שאלה",
+   "pattern": "שאלה שמערערת 'חובה' שהיא לא בחרה בה ('מי אמר ש...?'), או שואלת 'איך' על הקושי עצמו. היא לא שואלת 'מכירה את זה?'.",
+   "lift": 1.21,
+   "posts": 11,
+   "hooks": [
+    {
+     "text": "מי אמר שאת, כסבתא, צריכה לגדל את הנכדים שלך?",
+     "lift": 14.1,
+     "account": "tzofnatrosenthal",
+     "topic": "אמהות ומשפחה",
+     "url": "https://www.instagram.com/p/DcLkqL1MCU5/"
+    },
+    {
+     "text": "כמה אנרגיה את משקיעה בלדאוג שה'לא' שלך לא יכאיב…?",
+     "lift": 1.9,
+     "account": "veronika_psychodrama",
+     "topic": "גבולות",
+     "url": "https://www.instagram.com/p/DUWN8c4gJZl/"
+    },
+    {
+     "text": "אז איך שמים גבול בלי להרגיש סבתא רעה?",
+     "lift": 1.7,
+     "account": "tzofnatrosenthal",
+     "topic": "גבולות",
+     "url": "https://www.instagram.com/p/DcQunQpsUYp/"
+    }
+   ]
+  },
+  {
+   "opening": "סיפור אישי",
+   "pattern": "מספר ופרק זמן כבר במילה הראשונה (20 שנה, 11 שנים, לפני שנה), ומיד אחריו מה קרה. בלי הקדמה.",
+   "lift": 1.12,
+   "posts": 21,
+   "hooks": [
+    {
+     "text": "20 שנה נשארתי.",
+     "lift": 3.0,
+     "account": "hadaserez_imalevia",
+     "topic": "קשר רעיל ונרקיסיזם",
+     "url": "https://www.instagram.com/p/DdyxFfvo49m/"
+    },
+    {
+     "text": "11 שנים לקח לי להבין שהדבר הכי כואב לא היה מה שקרה לי…",
+     "lift": 2.8,
+     "account": "shany_barda",
+     "topic": "קשר רעיל ונרקיסיזם",
+     "url": "https://www.instagram.com/p/DbYKFDHjVOS/"
+    },
+    {
+     "text": "לפני שנה הייתי במקום שלא חשבתי שאצא ממנו",
+     "lift": 1.7,
+     "account": "shany_barda",
+     "topic": "קשר רעיל ונרקיסיזם",
+     "url": "https://www.instagram.com/p/DYe0OiCNv_I/"
+    }
+   ]
+  },
+  {
+   "opening": "אמירה חדה",
+   "pattern": "כשאמירה חדה עובדת, היא הופכת אמונה מקובלת ('לימדו אותנו ש...', 'לא כל...'). אמירה כללית בלי היפוך יוצאת מתחת לרגיל.",
+   "lift": 0.91,
+   "posts": 101,
+   "hooks": [
+    {
+     "text": "לימדו אותנו שאם יש לנו צרכים עמוקים… אנחנו 'תובעניות' או 'מסובכות'.",
+     "lift": 22.0,
+     "account": "hilla_healing",
+     "topic": "זוגיות",
+     "url": "https://www.instagram.com/p/Dd1zGnTIhyt/"
+    },
+    {
+     "text": "לא כל הורה שאומר שעשו לו ניכור הורי באמת הורחק מהילדים שלו",
+     "lift": 11.1,
+     "account": "shany_barda",
+     "topic": "קשר רעיל ונרקיסיזם",
+     "url": "https://www.instagram.com/p/Dc75Y4zNUe_/"
+    },
+    {
+     "text": "לפעמים מה שהכי כואב הוא לא רק שהקשר נגמר…",
+     "lift": 6.7,
+     "account": "coralfigaro",
+     "topic": "זוגיות",
+     "url": "https://www.instagram.com/p/Dc1QaGxux3T/"
+    }
+   ]
+  },
+  {
+   "opening": "טיפ או רשימה",
+   "pattern": "רשימה עובדת כשהפתיחה מבטיחה לזהות משהו ('ככה זה נראה'), ולא כשהיא מבטיחה עוד טיפים.",
+   "lift": 0.74,
+   "posts": 11,
+   "hooks": [
+    {
+     "text": "לפעמים היא נראית בדיוק ככה",
+     "lift": 15.2,
+     "account": "shany_barda",
+     "topic": "קשר רעיל ונרקיסיזם",
+     "url": "https://www.instagram.com/p/DYj5wL0tdcF/"
+    },
+    {
+     "text": "שמרו את הפוסט הזה לפעם הבאה שתרגישו אשמים על זה שהצבתם גבול.",
+     "lift": 1.0,
+     "account": "tipul.shelly",
+     "topic": "אשמה",
+     "url": "https://www.instagram.com/p/DadRDNpjdhC/"
+    }
+   ]
+  }
+ ],
  "phrases": [
   {
    "text": "זה בדיוק אני",

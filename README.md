@@ -108,8 +108,9 @@ shows what Instagram content gets a response from women aged 30–50 who struggl
 with people-pleasing, guilt and choosing themselves. It is based on the 20 most
 recent posts of eight coaches who speak to that audience, and opens with three
 post ideas built from what worked, each with a button that carries it to the
-marketing calendar. Below them: what works by topic, opening and format, the
-ten posts that stood out most, the phrases the women use in the comments, and
+marketing calendar. Below them: what works by topic, opening and format, a
+gallery of opening lines that worked, grouped by kind of opening with the
+pattern behind each, the ten posts that stood out most, the phrases the women use in the comments, and
 the insights behind the ideas.
 
 **How a post is measured.** Not by raw likes and comments, which mostly
