@@ -6,6 +6,8 @@ screen reads.
 Inputs:
   data-raw/posts.json, data-raw/comments.json, data-raw/meta.json
                               from collect_instagram.py (not in git)
+  data-raw/own-posts.json, data-raw/own-meta.json
+                              my own account, from collect_instagram.py --own
   data/content-labels.json    topic and opening of each post, by post code
   data/content-notes.json     summaries, the women's phrases, insights, post ideas,
                               and the opening lines picked for each kind of opening
@@ -33,7 +35,7 @@ from collections import defaultdict
 from pathlib import Path
 from statistics import median
 
-from collect_instagram import ACCOUNTS
+from collect_instagram import ACCOUNTS, OWN_ACCOUNT
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / 'data-raw'
@@ -44,6 +46,9 @@ OFF_TOPIC = 'אחר / אישי'
 TOP_POSTS = 10
 # Below this many posts a group is shown, but flagged as too thin to act on.
 ENOUGH_POSTS = 5
+# My own account has only 20 posts, so its groups are judged on fewer.
+ENOUGH_OWN_POSTS = 3
+OWN_TOP_POSTS = 3
 
 
 def load(path):
@@ -68,7 +73,32 @@ def engagement(post):
     return likes + (post.get('commentsCount') or 0)
 
 
-def compare_by(posts, key):
+def measure(raw_posts, labels):
+    """The posts with their labels, and their lift against their own account."""
+    posts = [
+        {
+            'code': post['shortCode'],
+            'url': post['url'],
+            # The profile the post was collected from. A collaboration post can
+            # be owned by someone else but still sits on this profile.
+            'account': post_code(post['inputUrl']),
+            'format': post_format(post),
+            'engagement': engagement(post),
+            **labels[post['shortCode']],
+        }
+        for post in raw_posts
+    ]
+    usual = {}
+    for account in {p['account'] for p in posts}:
+        values = [p['engagement'] for p in posts if p['account'] == account and p['engagement'] is not None]
+        usual[account] = median(values) if values else None
+    for post in posts:
+        base = usual[post['account']]
+        post['lift'] = post['engagement'] / base if post['engagement'] is not None and base else None
+    return posts, usual
+
+
+def compare_by(posts, key, enough_posts=ENOUGH_POSTS):
     groups = defaultdict(list)
     for post in posts:
         if post['lift'] is not None:
@@ -78,13 +108,75 @@ def compare_by(posts, key):
             'label': label,
             'lift': round(median(values), 2),
             'posts': len(values),
-            'enough': len(values) >= ENOUGH_POSTS,
+            'enough': len(values) >= enough_posts,
         }
         for label, values in groups.items()
     ]
     # Thin groups go last whatever their figure, so the top of each chart is
     # always something solid enough to act on.
     return sorted(rows, key=lambda row: (row['enough'], row['lift']), reverse=True)
+
+
+def side_by_side(mine, theirs):
+    """One row per group, my figure next to theirs. A group only one side has
+    is kept, because "they write about it and I never have" is the point."""
+    their_rows = {row['label']: row for row in theirs}
+    my_rows = {row['label']: row for row in mine}
+    order = [row['label'] for row in theirs] + [label for label in my_rows if label not in their_rows]
+    return [{'label': label, 'mine': my_rows.get(label), 'theirs': their_rows.get(label)} for label in order]
+
+
+def build_own(labels, notes, by_topic, by_opening, by_format):
+    """My account against the coaches, or None when it was never collected."""
+    if not (RAW / 'own-posts.json').exists():
+        return None
+
+    raw = load(RAW / 'own-posts.json')
+    meta = load(RAW / 'own-meta.json')
+    unlabelled = [post['shortCode'] for post in raw if post['shortCode'] not in labels]
+    if unlabelled:
+        sys.exit(f'{len(unlabelled)} of my posts have no label in data/content-labels.json: {unlabelled[:10]}')
+
+    posts, usual = measure(raw, labels)
+    on_topic = [p for p in posts if p['topic'] != OFF_TOPIC]
+    measured = [p for p in on_topic if p['lift'] is not None]
+
+    my_topics = compare_by(on_topic, 'topic', ENOUGH_OWN_POSTS)
+    written = {row['label'] for row in my_topics}
+    # Topics that work for them, on enough posts, that I have never written about.
+    gaps = [
+        {'label': row['label'], 'lift': row['lift'], 'posts': row['posts']}
+        for row in by_topic
+        if row['enough'] and row['lift'] >= 1 and row['label'] not in written
+    ]
+
+    top = sorted(measured, key=lambda post: post['lift'], reverse=True)[:OWN_TOP_POSTS]
+    missing = [post['code'] for post in top if post['code'] not in notes['summaries']]
+    if missing:
+        sys.exit(f'My top posts with no summary in data/content-notes.json: {missing}')
+
+    return {
+        'account': OWN_ACCOUNT,
+        'collectedAt': meta['collectedAt'],
+        'posts': len(posts),
+        'usualEngagement': usual[OWN_ACCOUNT],
+        'byTopic': side_by_side(my_topics, by_topic),
+        'byOpening': side_by_side(compare_by(posts, 'opening', ENOUGH_OWN_POSTS), by_opening),
+        'byFormat': side_by_side(compare_by(posts, 'format', ENOUGH_OWN_POSTS), by_format),
+        'gaps': gaps,
+        'topPosts': [
+            {
+                'topic': post['topic'],
+                'format': post['format'],
+                'lift': round(post['lift'], 1),
+                'engagement': post['engagement'],
+                'summary': notes['summaries'][post['code']],
+                'url': post['url'],
+            }
+            for post in top
+        ],
+        'takeaways': notes['ownTakeaways'],
+    }
 
 
 def main():
@@ -101,27 +193,7 @@ def main():
     if unlabelled:
         sys.exit(f'{len(unlabelled)} posts have no label in data/content-labels.json: {unlabelled[:10]}')
 
-    posts = [
-        {
-            'code': post['shortCode'],
-            'url': post['url'],
-            # The profile the post was collected from. A collaboration post can
-            # be owned by someone else but still sits on this profile.
-            'account': post_code(post['inputUrl']),
-            'format': post_format(post),
-            'engagement': engagement(post),
-            **labels[post['shortCode']],
-        }
-        for post in raw_posts
-    ]
-
-    usual = {}
-    for account in accounts:
-        values = [p['engagement'] for p in posts if p['account'] == account and p['engagement'] is not None]
-        usual[account] = median(values) if values else None
-    for post in posts:
-        base = usual[post['account']]
-        post['lift'] = post['engagement'] / base if post['engagement'] is not None and base else None
+    posts, _ = measure(raw_posts, labels)
 
     measured = [p for p in posts if p['lift'] is not None]
     on_topic = [p for p in posts if p['topic'] != OFF_TOPIC]
@@ -164,6 +236,8 @@ def main():
         })
     hook_patterns.sort(key=lambda group: group['lift'], reverse=True)
 
+    own = build_own(labels, notes, by_topic, by_opening, by_format)
+
     output = {
         'collectedAt': meta['collectedAt'],
         'totals': {
@@ -190,6 +264,7 @@ def main():
             }
             for post in top
         ],
+        'own': own,
         'ideas': notes['ideas'],
         'hookPatterns': hook_patterns,
         'phrases': notes['phrases'],

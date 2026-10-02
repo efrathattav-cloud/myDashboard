@@ -144,7 +144,15 @@ browser or the repository.
 python scripts/collect_instagram.py
 ```
 
-That one command collects the posts and comments into `data-raw/`. Then ask
+That one command collects the coaches' posts and comments into `data-raw/`.
+To refresh the comparison with my own account (20 posts, no comments, about
+$0.05), run it with `--own`:
+
+```bash
+python scripts/collect_instagram.py --own
+```
+
+Either way, the collection only gathers the data. Then ask
 Claude to analyse the new data: it labels each new post's topic and opening in
 `data/content-labels.json`, updates the summaries, phrases and insights in
 `data/content-notes.json`, and runs `python scripts/build_content_insights.py`

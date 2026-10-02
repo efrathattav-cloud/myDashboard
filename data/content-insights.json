@@ -224,6 +224,299 @@
    "url": "https://www.instagram.com/p/DdT-qZGIqVK/"
   }
  ],
+ "own": {
+  "account": "efrat_yaara_hattav_coaching",
+  "collectedAt": "2026-10-02T08:18:55+00:00",
+  "posts": 20,
+  "usualEngagement": 3.5,
+  "byTopic": [
+   {
+    "label": "גבולות",
+    "mine": null,
+    "theirs": {
+     "label": "גבולות",
+     "lift": 1.69,
+     "posts": 7,
+     "enough": true
+    }
+   },
+   {
+    "label": "זוגיות",
+    "mine": null,
+    "theirs": {
+     "label": "זוגיות",
+     "lift": 1.17,
+     "posts": 18,
+     "enough": true
+    }
+   },
+   {
+    "label": "אמהות ומשפחה",
+    "mine": null,
+    "theirs": {
+     "label": "אמהות ומשפחה",
+     "lift": 1.14,
+     "posts": 9,
+     "enough": true
+    }
+   },
+   {
+    "label": "ביטחון וערך עצמי",
+    "mine": {
+     "label": "ביטחון וערך עצמי",
+     "lift": 2.29,
+     "posts": 3,
+     "enough": true
+    },
+    "theirs": {
+     "label": "ביטחון וערך עצמי",
+     "lift": 1.08,
+     "posts": 17,
+     "enough": true
+    }
+   },
+   {
+    "label": "קשר רעיל ונרקיסיזם",
+    "mine": null,
+    "theirs": {
+     "label": "קשר רעיל ונרקיסיזם",
+     "lift": 1.04,
+     "posts": 36,
+     "enough": true
+    }
+   },
+   {
+    "label": "רגש, גוף ומחשבות",
+    "mine": null,
+    "theirs": {
+     "label": "רגש, גוף ומחשבות",
+     "lift": 1.0,
+     "posts": 10,
+     "enough": true
+    }
+   },
+   {
+    "label": "ריצוי",
+    "mine": null,
+    "theirs": {
+     "label": "ריצוי",
+     "lift": 0.98,
+     "posts": 21,
+     "enough": true
+    }
+   },
+   {
+    "label": "בחירה בעצמי והחלטות",
+    "mine": {
+     "label": "בחירה בעצמי והחלטות",
+     "lift": 0.86,
+     "posts": 12,
+     "enough": true
+    },
+    "theirs": {
+     "label": "בחירה בעצמי והחלטות",
+     "lift": 0.78,
+     "posts": 12,
+     "enough": true
+    }
+   },
+   {
+    "label": "אשמה",
+    "mine": null,
+    "theirs": {
+     "label": "אשמה",
+     "lift": 0.61,
+     "posts": 3,
+     "enough": false
+    }
+   },
+   {
+    "label": "עסק וקריירה",
+    "mine": null,
+    "theirs": {
+     "label": "עסק וקריירה",
+     "lift": 0.24,
+     "posts": 1,
+     "enough": false
+    }
+   }
+  ],
+  "byOpening": [
+   {
+    "label": "שאלה",
+    "mine": {
+     "label": "שאלה",
+     "lift": 0.29,
+     "posts": 3,
+     "enough": true
+    },
+    "theirs": {
+     "label": "שאלה",
+     "lift": 1.21,
+     "posts": 11,
+     "enough": true
+    }
+   },
+   {
+    "label": "סיפור אישי",
+    "mine": {
+     "label": "סיפור אישי",
+     "lift": 1.29,
+     "posts": 6,
+     "enough": true
+    },
+    "theirs": {
+     "label": "סיפור אישי",
+     "lift": 1.12,
+     "posts": 21,
+     "enough": true
+    }
+   },
+   {
+    "label": "אמירה חדה",
+    "mine": {
+     "label": "אמירה חדה",
+     "lift": 0.86,
+     "posts": 11,
+     "enough": true
+    },
+    "theirs": {
+     "label": "אמירה חדה",
+     "lift": 0.91,
+     "posts": 101,
+     "enough": true
+    }
+   },
+   {
+    "label": "טיפ או רשימה",
+    "mine": null,
+    "theirs": {
+     "label": "טיפ או רשימה",
+     "lift": 0.74,
+     "posts": 11,
+     "enough": true
+    }
+   }
+  ],
+  "byFormat": [
+   {
+    "label": "רילס",
+    "mine": {
+     "label": "רילס",
+     "lift": 1.0,
+     "posts": 10,
+     "enough": true
+    },
+    "theirs": {
+     "label": "רילס",
+     "lift": 1.08,
+     "posts": 104,
+     "enough": true
+    }
+   },
+   {
+    "label": "קרוסלה",
+    "mine": {
+     "label": "קרוסלה",
+     "lift": 1.0,
+     "posts": 2,
+     "enough": false
+    },
+    "theirs": {
+     "label": "קרוסלה",
+     "lift": 0.87,
+     "posts": 38,
+     "enough": true
+    }
+   },
+   {
+    "label": "תמונה",
+    "mine": {
+     "label": "תמונה",
+     "lift": 1.0,
+     "posts": 8,
+     "enough": true
+    },
+    "theirs": {
+     "label": "תמונה",
+     "lift": 3.11,
+     "posts": 2,
+     "enough": false
+    }
+   }
+  ],
+  "gaps": [
+   {
+    "label": "גבולות",
+    "lift": 1.69,
+    "posts": 7
+   },
+   {
+    "label": "זוגיות",
+    "lift": 1.17,
+    "posts": 18
+   },
+   {
+    "label": "אמהות ומשפחה",
+    "lift": 1.14,
+    "posts": 9
+   },
+   {
+    "label": "קשר רעיל ונרקיסיזם",
+    "lift": 1.04,
+    "posts": 36
+   },
+   {
+    "label": "רגש, גוף ומחשבות",
+    "lift": 1.0,
+    "posts": 10
+   }
+  ],
+  "topPosts": [
+   {
+    "topic": "בחירה בעצמי והחלטות",
+    "format": "רילס",
+    "lift": 2.9,
+    "engagement": 10,
+    "summary": "את כבר יודעת מה נכון לך, ועוד לא זזה: הזמנה לצעד קטן",
+    "url": "https://www.instagram.com/p/DWdVQZajFkZ/"
+   },
+   {
+    "topic": "ביטחון וערך עצמי",
+    "format": "רילס",
+    "lift": 2.9,
+    "engagement": 10,
+    "summary": "יש בך יותר: זה לא עניין של יכולת, אלא של איך את מדברת עם עצמך",
+    "url": "https://www.instagram.com/p/DXKhnbWjvxp/"
+   },
+   {
+    "topic": "ביטחון וערך עצמי",
+    "format": "תמונה",
+    "lift": 2.3,
+    "engagement": 8,
+    "summary": "בחתונה של אחותי פשוט נהניתי מהמחמאות, וזה היה חדש לי",
+    "url": "https://www.instagram.com/p/DbclbtjlcUT/"
+   }
+  ],
+  "takeaways": [
+   {
+    "title": "ריצוי, אשמה וגבולות עוד לא מופיעים אצלך",
+    "body": "אלה הקשיים של הקהל שלך, אבל אף אחד מ־20 הפוסטים האחרונים שלך לא עוסק בהם. גבולות הוא הנושא שהכי עובד אצלן (פי 1.7). אפשר להתחיל מרעיון 1 (גבולות מול המשפחה) ומרעיון 3 (אשמה)."
+   },
+   {
+    "title": "נושא אחד ממלא את הפיד",
+    "body": "12 מתוך 15 הפוסטים שלך שבנושא עוסקים ב\"אני יודעת מה אני רוצה ולא עושה\". המסר עקבי וברור, אבל זה לא הנושא שמקבל הכי הרבה תגובה: פי 0.9 אצלך ופי 0.8 אצלן."
+   },
+   {
+    "title": "סיפור אישי עובד גם אצלך",
+    "body": "פוסטים שנפתחים בסיפור אישי מקבלים אצלך פי 1.3 מהרגיל, כמו אצלן. שלושה מהפוסטים החזקים שלך אישיים. פתיחה בשאלה עוד לא עבדה אצלך (3 פוסטים בלבד), אז שווה לנסות שאלה שמערערת חובה, כמו בהוקים למטה."
+   },
+   {
+    "title": "המספרים עוד קטנים",
+    "body": "פוסט רגיל אצלך מקבל בערך 3–4 לייקים ותגובות, כך שלייק אחד משנה את היחס. ההשוואה כאן מראה כיוון, לא הוכחה. היעד הראשון הוא להגיע ליותר נשים."
+   }
+  ]
+ },
  "ideas": [
   {
    "hook": "מי אמר שאת חייבת להגיד כן כל פעם שהמשפחה מבקשת?",

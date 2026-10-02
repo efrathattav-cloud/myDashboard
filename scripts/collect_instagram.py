@@ -1,7 +1,8 @@
 """Collect recent Instagram posts, and the comments on the most discussed ones,
 through Apify's official Instagram scraper (apify/instagram-scraper).
 
-    python scripts/collect_instagram.py
+    python scripts/collect_instagram.py          the coaches: posts and comments
+    python scripts/collect_instagram.py --own    my own account: posts only
 
 Reads APIFY_TOKEN from .env. The token stays in this script: it is never
 written to the site, the browser or the repository.
@@ -45,12 +46,16 @@ ACCOUNTS = [
     'hadaserez_imalevia',
     'veronika_psychodrama',
 ]
+# Compared with the coaches on the content screen, never mixed into their figures.
+OWN_ACCOUNT = 'efrat_yaara_hattav_coaching'
+
 POSTS_PER_ACCOUNT = 20
 POSTS_WITH_COMMENTS = 10
 COMMENTS_PER_POST = 15  # The free plan returns about 15 per post anyway.
 
 PRICE_PER_RESULT_USD = 0.0027  # Free tier price, from the Actor's pricing.
 MAX_CHARGE_PER_RUN_USD = 1.0
+MAX_CHARGE_OWN_RUN_USD = 0.2  # 20 posts cost about $0.05.
 
 
 def read_token():
@@ -84,14 +89,14 @@ def credit_left(token):
     return data['limits']['maxMonthlyUsageUsd'] - data['current']['monthlyUsageUsd']
 
 
-def run_actor(token, actor_input, expected_results, label):
+def run_actor(token, actor_input, expected_results, label, max_charge=MAX_CHARGE_PER_RUN_USD):
     estimate = expected_results * PRICE_PER_RESULT_USD
     left = credit_left(token)
     print(f'{label}: about {expected_results} results, about ${estimate:.2f}. Credit left this month: ${left:.2f}.')
-    if left < MAX_CHARGE_PER_RUN_USD:
+    if left < max_charge:
         sys.exit('Not enough free credit left for a capped run. Nothing was started.')
 
-    run = call(token, 'POST', f'/acts/{ACTOR}/runs?maxTotalChargeUsd={MAX_CHARGE_PER_RUN_USD}', actor_input)['data']
+    run = call(token, 'POST', f'/acts/{ACTOR}/runs?maxTotalChargeUsd={max_charge}', actor_input)['data']
     # Polling instead of the synchronous endpoint, which gives up after 300 seconds.
     while run['status'] in ('READY', 'RUNNING'):
         time.sleep(10)
@@ -103,9 +108,36 @@ def run_actor(token, actor_input, expected_results, label):
     return call(token, 'GET', f"/datasets/{run['defaultDatasetId']}/items?clean=true&format=json")
 
 
+def collect_own(token):
+    """My own posts, without comments: only the figures are needed to compare."""
+    posts = run_actor(
+        token,
+        {
+            'resultsType': 'posts',
+            'directUrls': [f'https://www.instagram.com/{OWN_ACCOUNT}/'],
+            'resultsLimit': POSTS_PER_ACCOUNT,
+        },
+        POSTS_PER_ACCOUNT,
+        'My posts',
+        max_charge=MAX_CHARGE_OWN_RUN_USD,
+    )
+    posts = [post for post in posts if post.get('url') and not post.get('error')]
+    if not posts:
+        sys.exit('No posts came back. Is the account public?')
+
+    collected_at = datetime.now(timezone.utc).isoformat(timespec='seconds')
+    (RAW_DIR / 'own-posts.json').write_text(json.dumps(posts, ensure_ascii=False, indent=1), encoding='utf-8')
+    (RAW_DIR / 'own-meta.json').write_text(json.dumps({'collectedAt': collected_at, 'account': OWN_ACCOUNT}), encoding='utf-8')
+    print(f'Got {len(posts)} of my posts. Saved to {RAW_DIR}. Next: ask Claude to label them.')
+
+
 def main():
     token = read_token()
     RAW_DIR.mkdir(exist_ok=True)
+
+    if '--own' in sys.argv[1:]:
+        collect_own(token)
+        return
 
     posts = run_actor(
         token,

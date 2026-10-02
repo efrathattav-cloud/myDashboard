@@ -72,6 +72,105 @@ function ideasSection(ideas) {
 }
 
 /**
+ * One cell of the comparison table. A group I have never posted in says so in
+ * words; a thin one says it is too thin, rather than only looking paler.
+ */
+function compareCell(row, emptyText) {
+  if (!row) return `<td class="content-compare-empty">${escapeHtml(emptyText)}</td>`;
+  const note = row.enough ? `${row.posts} פוסטים` : `${row.posts} בלבד, מעט מדי`;
+  return `
+    <td class="${row.enough ? '' : 'content-compare-thin'}">
+      <span class="content-compare-lift">${escapeHtml(times(row.lift))}</span>
+      <span class="content-compare-note">${escapeHtml(note)}</span>
+    </td>`;
+}
+
+function compareTable(title, rows) {
+  return `
+    <div class="content-compare-wrap">
+      <table class="content-compare">
+        <caption>${escapeHtml(title)}</caption>
+        <thead>
+          <tr><th scope="col"></th><th scope="col">אצלי</th><th scope="col">אצלן</th></tr>
+        </thead>
+        <tbody>
+          ${rows
+            .map(
+              (row) => `
+                <tr>
+                  <th scope="row">${escapeHtml(row.label)}</th>
+                  ${compareCell(row.mine, 'עוד לא כתבתי')}
+                  ${compareCell(row.theirs, '—')}
+                </tr>`
+            )
+            .join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+/** My own account next to the coaches (SPEC section 3.8). */
+function ownSection(own) {
+  if (!own) return '';
+
+  return `
+    <section class="dashboard-section" aria-labelledby="own-heading">
+      <h2 class="section-title" id="own-heading">אצלי מול האחרות</h2>
+      <p class="chart-hint">${escapeHtml(
+        `@${own.account} · ${own.posts} פוסטים אחרונים · פוסט רגיל אצלי מקבל ${number(own.usualEngagement)} לייקים ותגובות. כל מספר כאן הוא פי כמה מהרגיל של אותו חשבון.`
+      )}</p>
+
+      <ol class="content-insights">
+        ${own.takeaways
+          .map(
+            (item) => `
+              <li class="card content-insight">
+                <h3 class="content-insight-title">${escapeHtml(item.title)}</h3>
+                <p>${escapeHtml(item.body)}</p>
+              </li>`
+          )
+          .join('')}
+      </ol>
+
+      ${
+        own.gaps.length
+          ? `<div class="card content-gaps">
+               <h3 class="content-insight-title">נושאים שעובדים אצלן ועוד לא כתבתי עליהם</h3>
+               <ul class="content-gap-list">
+                 ${own.gaps
+                   .map((gap) => `<li class="content-gap">${escapeHtml(gap.label)} <span>${escapeHtml(times(gap.lift))}</span></li>`)
+                   .join('')}
+               </ul>
+             </div>`
+          : ''
+      }
+
+      <div class="card content-compare-card">
+        ${compareTable('לפי נושא', own.byTopic)}
+        ${compareTable('לפי סוג פתיחה', own.byOpening)}
+        ${compareTable('לפי סוג פוסט', own.byFormat)}
+      </div>
+
+      <h3 class="content-insight-title content-own-top-title">3 הפוסטים שלי שהכי בלטו</h3>
+      <ol class="calendar-list content-top">
+        ${own.topPosts
+          .map(
+            (post) => `
+              <li class="calendar-row content-post">
+                <span class="content-post-score">${escapeHtml(times(post.lift))}</span>
+                <span class="calendar-title">${escapeHtml(post.summary)}</span>
+                <span class="calendar-tag">
+                  ${escapeHtml(`${post.topic} · ${post.format}`)}
+                  · <a href="${escapeHtml(post.url)}" target="_blank" rel="noopener">לפוסט<span class="visually-hidden"> (נפתח בחלון חדש)</span></a>
+                </span>
+              </li>`
+          )
+          .join('')}
+      </ol>
+    </section>`;
+}
+
+/**
  * Opening lines that worked, grouped by the kind of opening, strongest kind
  * first. These are the first line of the caption: for a reel the spoken or
  * on-screen hook may differ, and the hint says so.
@@ -200,6 +299,8 @@ function renderData(data) {
       ${kpiCard('הפתיחה שהכי עובדת', leadingOpening.label, `${times(leadingOpening.lift)} מהרגיל · ${leadingOpening.posts} פוסטים`)}
       ${kpiCard('הבסיס', `${number(totals.posts)} פוסטים`, `מ־${totals.accounts} חשבונות · ${totals.withHiddenLikes} עם לייקים מוסתרים`)}
     </section>
+
+    ${ownSection(data.own)}
 
     ${hooksSection(data.hookPatterns)}
 
